@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Product</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+background: linear-gradient(135deg,#FFF3AD,#FFCAF2,#C9B1FF);
+font-family:'Quicksand';
+}
+
+.container-box{
+max-width:900px;
+margin:60px auto;
+background:white;
+padding:30px;
+border-radius:20px;
+display:flex;
+gap:30px;
+align-items:center;
+}
+
+img{width:250px;}
+
+.qty-box{
+display:flex;
+align-items:center;
+gap:10px;
+margin:15px 0;
+}
+
+.qty-btn{
+padding:5px 12px;
+border:none;
+background:#FFCAF2;
+border-radius:6px;
+}
+
+.heart{
+font-size:24px;
+cursor:pointer;
+margin-left:10px;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="history.back()" class="btn btn-secondary m-3">← Back</button>
+
+<div class="container-box">
+
+<img id="img">
+
+<div>
+<h2 id="name"></h2>
+<h4 id="price"></h4>
+
+<div class="qty-box">
+<button class="qty-btn" onclick="dec()">-</button>
+<span id="qty">1</span>
+<button class="qty-btn" onclick="inc()">+</button>
+</div>
+
+<button class="btn btn-success" onclick="addCart()">Add to Cart</button>
+<span id="heart" class="heart" onclick="toggleWishlist()">🤍</span>
+
+</div>
+
+</div>
+
+<script>
+
+let p = JSON.parse(localStorage.getItem("selectedProduct"));
+
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+let cartKey="cart", wishlistKey="wishlist";
+if(currentUser){
+cartKey="cart_"+currentUser.email;
+wishlistKey="wishlist_"+currentUser.email;
+}
+
+let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+let wishlist = JSON.parse(localStorage.getItem(wishlistKey)) || [];
+
+let qty = 1;
+
+document.getElementById("img").src=p.img;
+document.getElementById("name").innerText=p.name;
+document.getElementById("price").innerText="₹"+p.price;
+
+// CHECK HEART
+if(wishlist.some(x=>x.name===p.name)){
+document.getElementById("heart").innerText="❤️";
+}
+
+// QUANTITY
+function inc(){
+qty++;
+document.getElementById("qty").innerText=qty;
+}
+
+function dec(){
+if(qty>1) qty--;
+document.getElementById("qty").innerText=qty;
+}
+
+// ADD CART
+function addCart(){
+let found=cart.find(x=>x.name===p.name);
+
+if(found) found.qty+=qty;
+else cart.push({...p,qty:qty});
+
+localStorage.setItem(cartKey,JSON.stringify(cart));
+alert("Added to cart 🛒");
+}
+
+// WISHLIST
+function toggleWishlist(){
+let idx=wishlist.findIndex(x=>x.name===p.name);
+
+if(idx>-1){
+wishlist.splice(idx,1);
+document.getElementById("heart").innerText="🤍";
+alert("Removed from wishlist");
+}else{
+wishlist.push(p);
+document.getElementById("heart").innerText="❤️";
+alert("Added to wishlist");
+}
+
+localStorage.setItem(wishlistKey,JSON.stringify(wishlist));
+}
+
+</script>
+
+</body>
+</html>
