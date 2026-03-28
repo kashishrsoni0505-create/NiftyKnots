@@ -1,119 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Cart | Nifty Knots</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-<style>
-body{ background: linear-gradient(135deg,#FFF3AD,#FFCAF2,#C9B1FF); font-family:'Quicksand'; }
-.container-box{ max-width:800px; margin:40px auto; background:white; padding:30px; border-radius:20px; box-shadow:0 6px 20px rgba(0,0,0,0.1); }
-.card{ border:none; border-radius:15px; padding:10px; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.08); mb-3; }
-.card img{ height:100px; object-fit:contain; }
-.form-control { border-radius: 10px; border: 1px solid #FFCAF2; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Nifty Knots</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #FFF9E3, #FFE4F9, #EBE3FF); font-family: 'Quicksand', sans-serif; min-height: 100vh; }
+        .checkout-box { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-control { border-radius: 12px; border: 1px solid #eee; padding: 12px; font-size: 0.9rem; }
+        .form-control:focus { box-shadow: 0 0 0 3px rgba(201, 177, 255, 0.2); border-color: #C9B1FF; }
+        .item-row { border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
 
-<button onclick="history.back()" class="btn btn-secondary m-3">← Back</button>
+<div class="container py-4">
+    <div class="checkout-box" id="main-content">
+        <h4 style="color: #6a5acd; font-weight: 600;" class="mb-4">Bag Details 🛒</h4>
+        <div id="cart-items"></div>
+        <hr>
+        <div class="d-flex justify-content-between mb-4">
+            <h5>Total:</h5>
+            <h5 id="total-price" style="color: #C9B1FF;">₹0</h5>
+        </div>
 
-<div class="container-box">
-    <h2 class="text-center mb-4">🛒 Your Cart</h2>
-    <div id="box"></div>
-    <h4 id="total" class="text-center mt-3">Total: ₹0</h4>
-
-    <div id="checkout-section" style="display:none;" class="mt-4 border-top pt-3">
-        <h5>Shipping Details 🚚</h5>
-        <input type="text" id="custName" class="form-control mb-2" placeholder="Full Name" required>
-        <input type="email" id="custEmail" class="form-control mb-2" placeholder="Email Address" required>
-        <input type="text" id="custPhone" class="form-control mb-2" placeholder="Phone Number" required>
-        <textarea id="custAddress" class="form-control mb-3" placeholder="Full Address with Pincode" required></textarea>
+        <h6 class="mb-3 mt-4">Delivery Address 🏡</h6>
+        <input type="text" id="custName" class="form-control mb-2" placeholder="Your Name">
+        <input type="number" id="custPhone" class="form-control mb-2" placeholder="WhatsApp Number">
         
-        <button onclick="processOrder()" class="btn btn-success w-100 fw-bold">Confirm & Pay via UPI 💳</button>
-    </div>
+        <input type="text" id="addrHouse" class="form-control mb-2" placeholder="House/Flat No, Building Name">
+        <input type="text" id="addrArea" class="form-control mb-2" placeholder="Street, Colony, Landmark">
+        <div class="row g-2">
+            <div class="col-6"><input type="text" id="addrCity" class="form-control mb-2" placeholder="City"></div>
+            <div class="col-6"><input type="number" id="addrPin" class="form-control mb-2" placeholder="Pincode"></div>
+        </div>
 
-    <button id="show-form-btn" onclick="showForm()" class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
+        <button onclick="processOrder()" class="btn btn-primary w-100 py-3 mt-3 shadow-sm" style="border-radius: 50px; font-weight: bold;">
+            Confirm Order & Pay
+        </button>
+    </div>
 </div>
 
 <script>
-// --- CONFIGURATION ---
-const scriptURL = 'https://script.google.com/macros/s/AKfycbylj9zYjbDqdq2sD18ligs2o5fwMuuy0gZNZgDlZ3RTIQ9I2Bmk5aMULnz1Y17OBn0o/exec';
-const myUpiId = "kashishrsoni0505@okaxis"; // <--- STEP 1: Put your UPI ID here!
+    const myUpiId = "kashishsoni0505-1@okaxis"; // Update this if needed
+    const scriptURL = "YOUR_GOOGLE_SHEET_URL"; // PASTE YOUR URL HERE
 
-let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-let cartKey = currentUser ? "cart_" + currentUser.email : "cart";
-let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-let total = 0;
-
-function renderCart() {
-    let box = document.getElementById("box");
-    box.innerHTML = "";
-    total = 0;
-    
-    if(cart.length === 0) {
-        box.innerHTML = "<h5 class='text-center'>Your cart is empty 🛒</h5>";
-        document.getElementById("show-form-btn").style.display = "none";
-        return;
+    function loadCart() {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let container = document.getElementById('cart-items');
+        let total = 0;
+        container.innerHTML = "";
+        cart.forEach(item => {
+            total += item.price * item.qty;
+            container.innerHTML += `
+                <div class="d-flex justify-content-between item-row small">
+                    <span>${item.name} (x${item.qty})</span>
+                    <span>₹${item.price * item.qty}</span>
+                </div>`;
+        });
+        document.getElementById('total-price').innerText = "₹" + total;
+        return total;
     }
 
-    cart.forEach((p, i) => {
-        total += p.price * p.qty;
-        box.innerHTML += `
-            <div class="card d-flex flex-row align-items-center gap-3 mb-2">
-                <img src="${p.img}">
-                <div class="flex-grow-1">
-                    <h6 class="mb-0">${p.name}</h6>
-                    <small>₹${p.price} x ${p.qty}</small>
-                </div>
-                <button onclick="removeItem(${i})" class="btn btn-sm btn-outline-danger">Remove</button>
-            </div>`;
-    });
-    document.getElementById("total").innerText = "Total: ₹" + total;
-}
+    const finalAmount = loadCart();
 
-function showForm() {
-    document.getElementById('checkout-section').style.display = 'block';
-    document.getElementById('show-form-btn').style.display = 'none';
-}
+    function processOrder() {
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
+        const house = document.getElementById('addrHouse').value;
+        const area = document.getElementById('addrArea').value;
+        const city = document.getElementById('addrCity').value;
+        const pin = document.getElementById('addrPin').value;
 
-function removeItem(i) {
-    cart.splice(i, 1);
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-    renderCart();
-}
+        if(!name || !phone || !house || !area || !city || !pin) {
+            alert("Please fill all details! 🧶"); return;
+        }
 
-function processOrder() {
-    const name = document.getElementById('custName').value;
-    const email = document.getElementById('custEmail').value;
-    const phone = document.getElementById('custPhone').value;
-    const address = document.getElementById('custAddress').value;
+        const fullAddr = `${house}, ${area}, ${city} - ${pin}`;
+        const orderData = { name, phone, address: fullAddr, amount: finalAmount };
 
-    if(!name || !email || !phone || !address) {
-        alert("Please fill all details! ✨");
-        return;
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(orderData) })
+        .then(() => {
+            document.getElementById('main-content').innerHTML = `
+                <div class="text-center py-4">
+                    <h2 style="color: #C9B1FF;">Order Placed! 🥳</h2>
+                    <div class="p-4 my-4" style="background: #FFF3AD; border-radius: 20px; border: 2px dashed #FFCAF2;">
+                        <h6 class="mb-3">Final Step: Payment 💰</h6>
+                        <p>Total to Pay: <b>₹${finalAmount}</b></p>
+                        <a href="upi://pay?pa=${myUpiId}&pn=NiftyKnots&am=${finalAmount}&cu=INR" class="btn btn-primary w-100 py-3 mb-3" style="border-radius: 50px; font-weight:bold;">Tap to Pay Now</a>
+                        <p class="small text-muted mb-2">OR Scan QR Code:</p>
+                        <img src="myqr.png" style="width: 180px; border-radius: 10px; background: white; padding: 5px;">
+                    </div>
+                    <p class="small">We will start making your order as soon as payment is confirmed! 🧶</p>
+                    <button onclick="window.location.href='index.html'" class="btn btn-sm btn-outline-secondary">Return Home</button>
+                </div>`;
+            localStorage.setItem("cart", "[]");
+        });
     }
-
-    const orderData = {
-        name: name,
-        email: email,
-        phone: phone,
-        address: address,
-        orderDetails: cart.map(p => `${p.name} (x${p.qty})`).join(", "),
-        total: total
-    };
-
-    // Send to Google Sheet
-    fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(orderData) })
-    .then(() => {
-        alert("Order Recorded! Opening Payment App...");
-        // Redirect to UPI
-        window.location.href = `upi://pay?pa=${myUpiId}&pn=NiftyKnots&am=${total}&tn=OrderFor${name}&cu=INR`;
-        // Clear cart
-        localStorage.setItem(cartKey, JSON.stringify([]));
-    })
-    .catch(() => alert("Error saving order. Please try again."));
-}
-
-renderCart();
 </script>
 </body>
 </html>
