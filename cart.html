@@ -8,15 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body { background: linear-gradient(135deg, #FFF9E3, #FFE4F9, #EBE3FF); font-family: 'Quicksand', sans-serif; min-height: 100vh; }
-        .checkout-box { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .form-control { border-radius: 12px; border: 1px solid #eee; padding: 12px; font-size: 0.9rem; }
-        .form-control:focus { box-shadow: 0 0 0 3px rgba(201, 177, 255, 0.2); border-color: #C9B1FF; }
+        .checkout-box { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 20px; }
+        .form-control { border-radius: 12px; border: 1px solid #eee; padding: 12px; font-size: 0.9rem; margin-bottom: 10px; }
         .item-row { border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; margin-bottom: 10px; }
+        .btn-confirm { background: #C9B1FF; border: none; border-radius: 50px; color: white; font-weight: bold; padding: 15px; transition: 0.3s; }
+        .btn-confirm:active { transform: scale(0.95); background: #b394ff; }
     </style>
 </head>
 <body>
 
-<div class="container py-4">
+<div class="container pb-5">
     <div class="checkout-box" id="main-content">
         <h4 style="color: #6a5acd; font-weight: 600;" class="mb-4">Bag Details 🛒</h4>
         <div id="cart-items"></div>
@@ -26,33 +27,38 @@
             <h5 id="total-price" style="color: #C9B1FF;">₹0</h5>
         </div>
 
-        <h6 class="mb-3 mt-4">Delivery Address 🏡</h6>
-        <input type="text" id="custName" class="form-control mb-2" placeholder="Your Name">
-        <input type="number" id="custPhone" class="form-control mb-2" placeholder="WhatsApp Number">
+        <h6 class="mb-3 mt-4">Delivery Details 🏡</h6>
+        <input type="text" id="custName" class="form-control" placeholder="Full Name">
+        <input type="email" id="custEmail" class="form-control" placeholder="Email Address">
+        <input type="number" id="custPhone" class="form-control" placeholder="WhatsApp Number">
         
-        <input type="text" id="addrHouse" class="form-control mb-2" placeholder="House/Flat No, Building Name">
-        <input type="text" id="addrArea" class="form-control mb-2" placeholder="Street, Colony, Landmark">
+        <h6 class="mb-3 mt-3">Address</h6>
+        <input type="text" id="addrHouse" class="form-control" placeholder="House/Flat No, Building Name">
+        <input type="text" id="addrArea" class="form-control" placeholder="Street, Colony, Landmark">
         <div class="row g-2">
-            <div class="col-6"><input type="text" id="addrCity" class="form-control mb-2" placeholder="City"></div>
-            <div class="col-6"><input type="number" id="addrPin" class="form-control mb-2" placeholder="Pincode"></div>
+            <div class="col-6"><input type="text" id="addrCity" class="form-control" placeholder="City"></div>
+            <div class="col-6"><input type="number" id="addrPin" class="form-control" placeholder="Pincode"></div>
         </div>
 
-        <button onclick="processOrder()" class="btn btn-primary w-100 py-3 mt-3 shadow-sm" style="border-radius: 50px; font-weight: bold;">
+        <button onclick="processOrder()" id="submitBtn" class="btn btn-confirm w-100 mt-3">
             Confirm Order & Pay
         </button>
     </div>
 </div>
 
 <script>
-    const myUpiId = "kashishsoni0505-1@okaxis"; 
-    // MAKE SURE THIS IS YOUR NEWEST DEPLOY URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwizuw0oa2qnwbOVhmWeABcwgFfy_jClb-oq2_rGrI6YjIB6JK3jyywVHy7s9eB7RQC/exec";
+    // 1. UPDATE THIS URL WITH YOUR GOOGLE SCRIPT URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzkZhL2NqhY6qVBC-f6QOoLVHuiz0SbyOasehcOKYAJi3c_Fb9c9JcHWjug9PoVMt4/exec";
 
     function loadCart() {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         let container = document.getElementById('cart-items');
         let total = 0;
         container.innerHTML = "";
+        if(cart.length === 0) {
+            container.innerHTML = "<p class='text-center'>Your bag is empty!</p>";
+            document.getElementById('submitBtn').disabled = true;
+        }
         cart.forEach(item => {
             total += item.price * item.qty;
             container.innerHTML += `
@@ -68,7 +74,7 @@
     const finalAmount = loadCart();
 
     function processOrder() {
-        // 1. Get Values
+        // Get all elements
         const name = document.getElementById('custName').value;
         const email = document.getElementById('custEmail').value;
         const phone = document.getElementById('custPhone').value;
@@ -77,43 +83,45 @@
         const city = document.getElementById('addrCity').value;
         const pin = document.getElementById('addrPin').value;
 
-        // 2. Validate (This is the alert you were missing)
+        // Validation check
         if (!name || !email || !phone || !house || !area || !city || !pin) {
-            alert("Please fill all details! 🧶");
+            alert("Oops! Please fill in all the details for delivery. 🧶");
             return;
         }
+
+        const btn = document.getElementById('submitBtn');
+        btn.innerText = "Processing...";
+        btn.disabled = true;
 
         const fullAddr = `${house}, ${area}, ${city} - ${pin}`;
         const orderData = { name, email, phone, address: fullAddr, amount: finalAmount };
 
-        // 3. Send Data
         fetch(scriptURL, {
             method: 'POST',
             mode: 'no-cors',
             cache: 'no-cache',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         })
         .then(() => {
-            // 4. Success UI
             document.getElementById('main-content').innerHTML = `
                 <div class="text-center py-4">
                     <h2 style="color: #C9B1FF;">Order Placed! 🥳</h2>
                     <div class="p-4 my-4" style="background: #FFF3AD; border-radius: 20px; border: 2px dashed #FFCAF2;">
                         <h6 class="mb-3">Final Step: Payment 💰</h6>
                         <p>Total to Pay: <b>₹${finalAmount}</b></p>
-                        <a href="upi://pay?pa=${myUpiId}&pn=NiftyKnots&am=${finalAmount}&cu=INR" class="btn btn-primary w-100 py-3 mb-3" style="border-radius: 50px; font-weight:bold;">Tap to Pay Now</a>
+                        <a href="upi://pay?pa=kashishsoni0505-1@okaxis&pn=NiftyKnots&am=${finalAmount}&cu=INR" class="btn btn-primary w-100 py-3 mb-3" style="border-radius: 50px; font-weight:bold; background:#C9B1FF; border:none;">Tap to Pay Now</a>
                         <p class="small text-muted mb-2">OR Scan QR Code:</p>
                         <img src="myqr.png" style="width: 180px; border-radius: 10px; background: white; padding: 5px;">
                     </div>
-                    <p class="small">We will start making your order as soon as payment is confirmed! 🧶</p>
+                    <p class="small">Check your email for confirmation! We will start making your order soon. 🧶</p>
                     <button onclick="window.location.href='index.html'" class="btn btn-sm btn-outline-secondary">Return Home</button>
                 </div>`;
             localStorage.setItem("cart", "[]");
         })
         .catch(err => {
-            console.error(err);
-            alert("Connection error. Please check your internet!");
+            alert("Something went wrong. Please try again!");
+            btn.innerText = "Confirm Order & Pay";
+            btn.disabled = false;
         });
     }
 </script>
