@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | Nifty Knots</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #FFF9E3, #FFE4F9, #EBE3FF); font-family: 'Quicksand', sans-serif; min-height: 100vh; }
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
+        .product-card { background: white; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .product-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 12px; margin-bottom: 8px; }
+        .product-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; height: 38px; overflow: hidden; line-height: 1.2; }
+        .product-price { color: #C9B1FF; font-weight: bold; font-size: 0.95rem; }
+        .add-btn { background: #FFCAF2; border: none; border-radius: 50px; font-size: 0.75rem; padding: 6px 12px; margin-top: 5px; width: 100%; font-weight: 600; }
+        .add-btn:active { transform: scale(0.9); background: #f8b3e8; }
+        .cart-float { position: fixed; bottom: 20px; right: 20px; background: #C9B1FF; color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-decoration: none; font-size: 1.3rem; z-index: 1000; }
+    </style>
+</head>
+<body>
+
+<div class="p-3 d-flex align-items-center sticky-top bg-white bg-opacity-75" style="backdrop-filter: blur(5px);">
+    <button onclick="location.href='index.html'" class="btn btn-sm btn-light rounded-circle me-3">←</button>
+    <h4 id="cat-title" class="m-0" style="color: #6a5acd; font-weight: 600;">Explore</h4>
+</div>
+
+<div class="product-grid" id="product-container"></div>
+<a href="cart.html" class="cart-float">🛒</a>
+
+<script>
+    const allProducts = [
+        // Keychains
+        { name: "Pearl Flower Keychain", price: 30, img: "pearl_flower.png", cat: "Keychains" },
+        { name: "Red Pearl Flower Keychain", price: 30, img: "red_pearl.png", cat: "Keychains" },
+        { name: "Off White Pearl Flower", price: 30, img: "white_pearl.png", cat: "Keychains" },
+        { name: "Falsa Pearl Flower", price: 30, img: "falsa_pearl.png", cat: "Keychains" },
+        { name: "Unicorn Pearl Flower", price: 30, img: "unicorn_pearl.png", cat: "Keychains" },
+        { name: "Blue Red Keychain", price: 50, img: "blue_red_key.png", cat: "Keychains" },
+        { name: "Red Keychain", price: 50, img: "red_key.png", cat: "Keychains" },
+        { name: "Falsa Keychain", price: 50, img: "falsa_key.png", cat: "Keychains" },
+        
+        // Hair Accessories
+        { name: "Red Simple Scrunchie", price: 30, img: "red_scrunchie.png", cat: "Hair" },
+        { name: "Dark Simple Scrunchie", price: 30, img: "dark_scrunchie.png", cat: "Hair" },
+        { name: "Yellow Simple Scrunchie", price: 30, img: "yellow_scrunchie.png", cat: "Hair" },
+        { name: "Light Purple Scrunchie", price: 30, img: "purple_scrunchie.png", cat: "Hair" },
+        { name: "Off White Scrunchie", price: 30, img: "white_scrunchie.png", cat: "Hair" },
+        { name: "Blue Simple Scrunchie", price: 30, img: "blue_scrunchie.png", cat: "Hair" },
+        { name: "Pista Simple Scrunchie", price: 30, img: "pista_scrunchie.png", cat: "Hair" },
+        { name: "Light Blue Scrunchie", price: 30, img: "lblue_scrunchie.png", cat: "Hair" },
+        { name: "Rose & White Double", price: 60, img: "rose_white_double.png", cat: "Hair" },
+        { name: "Green & White Double", price: 60, img: "green_white_double.png", cat: "Hair" },
+        { name: "Purple & White Double", price: 60, img: "purple_white_double.png", cat: "Hair" },
+        { name: "Pink & White Double", price: 60, img: "pink_white_double.png", cat: "Hair" },
+        { name: "Falsa & White Double", price: 60, img: "falsa_white_double.png", cat: "Hair" },
+        { name: "Unicorn Double", price: 60, img: "unicorn_double.png", cat: "Hair" },
+        { name: "Green Triple Layer", price: 70, img: "green_triple.png", cat: "Hair" },
+        { name: "Flower Hair Clip", price: 20, img: "flower_clip.png", cat: "Hair" },
+        { name: "Small Bow Pin", price: 20, img: "small_bow.png", cat: "Hair" },
+        { name: "Big Bow Pin", price: 30, img: "big_bow.png", cat: "Hair" },
+        { name: "Smile Clip Band", price: 40, img: "smile_band.png", cat: "Hair" },
+        { name: "Daisy Clutcher", price: 85, img: "daisy_clutcher.png", cat: "Hair" },
+        { name: "Flower Hair Band", price: 50, img: "flower_band.png", cat: "Hair" },
+
+        // Purse / Pouches
+        { name: "Granny Square Pouch", price: 100, img: "square_pouch.png", cat: "Purse" },
+        { name: "Granny Rect Pouch", price: 80, img: "rect_pouch.png", cat: "Purse" },
+        { name: "Mini Potli Pouch", price: 40, img: "mini_potli.png", cat: "Purse" },
+        { name: "Medium Potli Pouch", price: 60, img: "med_potli.png", cat: "Purse" }
+    ];
+
+    const params = new URLSearchParams(window.location.search);
+    const selectedCat = params.get('cat');
+    document.getElementById('cat-title').innerText = selectedCat;
+
+    const container = document.getElementById('product-container');
+    const filtered = allProducts.filter(p => p.cat === selectedCat);
+
+    if(filtered.length === 0) {
+        container.innerHTML = "<p class='text-center col-12 py-5'>Coming Soon... 🧶✨</p>";
+    } else {
+        filtered.forEach(p => {
+            container.innerHTML += `
+                <div class="product-card">
+                    <img src="${p.img}" alt="${p.name}">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-price">₹${p.price}</div>
+                    <button onclick="addToCart('${p.name}', ${p.price}, '${p.img}')" class="add-btn">Add to Bag</button>
+                </div>
+            `;
+        });
+    }
+
+    function addToCart(name, price, img) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let existing = cart.find(item => item.name === name);
+        if(existing) { existing.qty += 1; } else { cart.push({ name, price, img, qty: 1 }); }
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert(name + " added! 💖");
+    }
+</script>
+</body>
+</html>
