@@ -67,38 +67,52 @@
     const finalAmount = loadCart();
 
     function processOrder() {
-        const name = document.getElementById('custName').value;
-        const phone = document.getElementById('custPhone').value;
-        const house = document.getElementById('addrHouse').value;
-        const area = document.getElementById('addrArea').value;
-        const city = document.getElementById('addrCity').value;
-        const pin = document.getElementById('addrPin').value;
+    const name = document.getElementById('custName').value;
+    const email = document.getElementById('custEmail').value;
+    const phone = document.getElementById('custPhone').value;
+    const house = document.getElementById('addrHouse').value;
+    const area = document.getElementById('addrArea').value;
+    const city = document.getElementById('addrCity').value;
+    const pin = document.getElementById('addrPin').value;
 
-        if(!name || !phone || !house || !area || !city || !pin) {
-            alert("Please fill all details! 🧶"); return;
-        }
-
-        const fullAddr = `${house}, ${area}, ${city} - ${pin}`;
-        const orderData = { name, phone, address: fullAddr, amount: finalAmount };
-
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(orderData) })
-        .then(() => {
-            document.getElementById('main-content').innerHTML = `
-                <div class="text-center py-4">
-                    <h2 style="color: #C9B1FF;">Order Placed! 🥳</h2>
-                    <div class="p-4 my-4" style="background: #FFF3AD; border-radius: 20px; border: 2px dashed #FFCAF2;">
-                        <h6 class="mb-3">Final Step: Payment 💰</h6>
-                        <p>Total to Pay: <b>₹${finalAmount}</b></p>
-                        <a href="upi://pay?pa=${myUpiId}&pn=NiftyKnots&am=${finalAmount}&cu=INR" class="btn btn-primary w-100 py-3 mb-3" style="border-radius: 50px; font-weight:bold;">Tap to Pay Now</a>
-                        <p class="small text-muted mb-2">OR Scan QR Code:</p>
-                        <img src="myqr.png" style="width: 180px; border-radius: 10px; background: white; padding: 5px;">
-                    </div>
-                    <p class="small">We will start making your order as soon as payment is confirmed! 🧶</p>
-                    <button onclick="window.location.href='index.html'" class="btn btn-sm btn-outline-secondary">Return Home</button>
-                </div>`;
-            localStorage.setItem("cart", "[]");
-        });
+    if(!name || !email || !phone || !house || !area || !city || !pin) {
+        alert("Please fill all details! 🧶"); 
+        return;
     }
+
+    const fullAddr = `${house}, ${area}, ${city} - ${pin}`;
+    const orderData = { name, email, phone, address: fullAddr, amount: finalAmount };
+
+    // REPLACE THE URL BELOW WITH YOUR LATEST DEPLOYMENT URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzkZhL2NqhY6qVBC-f6QOoLVHuiz0SbyOasehcOKYAJi3c_Fb9c9JcHWjug9PoVMt4/exec";
+
+    // This specific configuration fixes the "not working" issue
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors', // Crucial for Google Apps Script
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    })
+    .then(() => {
+        // Success UI
+        document.getElementById('main-content').innerHTML = `
+            <div class="text-center py-4">
+                <h2 style="color: #C9B1FF;">Order Placed! 🥳</h2>
+                <div class="p-4 my-4" style="background: #FFF3AD; border-radius: 20px; border: 2px dashed #FFCAF2;">
+                    <h6 class="mb-3">Final Step: Payment 💰</h6>
+                    <p>Total to Pay: <b>₹${finalAmount}</b></p>
+                    <a href="upi://pay?pa=kashishsoni0505-1@okaxis&pn=NiftyKnots&am=${finalAmount}&cu=INR" class="btn btn-primary w-100 py-3 mb-3" style="border-radius: 50px; font-weight:bold;">Tap to Pay Now</a>
+                    <img src="myqr.png" style="width: 180px; border-radius: 10px;">
+                </div>
+            </div>`;
+        localStorage.setItem("cart", "[]");
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        alert("Something went wrong. Please check your internet!");
+    });
+}
 </script>
 </body>
 </html>
