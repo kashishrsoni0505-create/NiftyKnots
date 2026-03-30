@@ -3,127 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | Nifty Knots</title>
+    <meta name="color-scheme" content="light">
+    <title>Checkout | Nifty Knots 🧶</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #FFF9E3, #FFE4F9, #EBE3FF); font-family: 'Quicksand', sans-serif; min-height: 100vh; }
-        .checkout-box { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 20px; }
-        .form-control { border-radius: 12px; border: 1px solid #eee; padding: 12px; font-size: 0.9rem; margin-bottom: 10px; }
-        .item-row { border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; margin-bottom: 10px; }
-        .btn-confirm { background: #C9B1FF; border: none; border-radius: 50px; color: white; font-weight: bold; padding: 15px; transition: 0.3s; }
-        .btn-confirm:active { transform: scale(0.95); background: #b394ff; }
+        body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; }
+        .checkout-card { border: none; border-radius: 20px; background: white; padding: 20px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .total-row { font-weight: bold; font-size: 1.2rem; color: #C9B1FF; border-top: 2px dashed #eee; pt-2; }
+        .btn-confirm { background: #C9B1FF; border: none; border-radius: 50px; font-weight: bold; color: white; padding: 12px; }
     </style>
 </head>
 <body>
 
-<div class="container pb-5">
-    <div class="checkout-box" id="main-content">
-        <h4 style="color: #6a5acd; font-weight: 600;" class="mb-4">Bag Details 🛒</h4>
-        <div id="cart-items"></div>
-        <hr>
-        <div class="d-flex justify-content-between mb-4">
-            <h5>Total:</h5>
-            <h5 id="total-price" style="color: #C9B1FF;">₹0</h5>
-        </div>
-
-        <h6 class="mb-3 mt-4">Delivery Details 🏡</h6>
-        <input type="text" id="custName" class="form-control" placeholder="Full Name">
-        <input type="email" id="custEmail" class="form-control" placeholder="Email Address">
-        <input type="number" id="custPhone" class="form-control" placeholder="WhatsApp Number">
+<div class="container py-4">
+    <h4 class="text-center mb-4" style="color: #C9B1FF;">Checkout 🛍️</h4>
+    
+    <div class="checkout-card shadow-sm mb-4">
+        <h6>Order Summary</h6>
+        <div id="cart-items-list" class="small mb-3"></div>
         
-        <h6 class="mb-3 mt-3">Address</h6>
-        <input type="text" id="addrHouse" class="form-control" placeholder="House/Flat No, Building Name">
-        <input type="text" id="addrArea" class="form-control" placeholder="Street, Colony, Landmark">
-        <div class="row g-2">
-            <div class="col-6"><input type="text" id="addrCity" class="form-control" placeholder="City"></div>
-            <div class="col-6"><input type="number" id="addrPin" class="form-control" placeholder="Pincode"></div>
+        <div class="summary-item"><span>Items Total:</span> <span id="subtotal">₹0</span></div>
+        <div class="summary-item"><span>Shipping Fee:</span> <span id="shipping-fee">₹0</span></div>
+        <div class="summary-item total-row"><span>Grand Total:</span> <span id="grand-total">₹0</span></div>
+        <p id="shipping-note" class="text-muted" style="font-size: 0.7rem;"></p>
+    </div>
+
+    <div class="checkout-card shadow-sm">
+        <h6>Delivery Details</h6>
+        <input type="text" id="custName" class="form-control mb-3" placeholder="Full Name">
+        
+        <div class="input-group mb-3">
+            <span class="input-group-text">🇮🇳 +91</span>
+            <input type="tel" id="custPhone" class="form-control" placeholder="10-digit WhatsApp No" maxlength="10">
         </div>
 
-        <button onclick="processOrder()" id="submitBtn" class="btn btn-confirm w-100 mt-3">
-            Confirm Order & Pay
-        </button>
+        <input type="email" id="custEmail" class="form-control mb-3" placeholder="Email Address">
+        
+        <select id="custState" class="form-select mb-3" onchange="calculateShipping()">
+            <option value="">Select State</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Other">Outside Gujarat (All India)</option>
+        </select>
+
+        <textarea id="custAddress" class="form-control mb-3" placeholder="Full Address (include City/Area for free delivery check)" oninput="calculateShipping()"></textarea>
+
+        <button class="btn btn-confirm w-100" onclick="processOrder()">Confirm & Pay</button>
+
+        <div class="text-center mt-3">
+            <p class="small text-muted mb-2">We accept UPI payments only</p>
+            <div class="d-flex justify-content-center gap-3 opacity-75">
+                <img src="https://img.icons8.com/color/48/google-pay-india.png" width="25">
+                <img src="https://img.icons8.com/color/48/phone-pe.png" width="25">
+                <img src="https://img.icons8.com/color/48/paytm.png" width="25">
+                <img src="https://img.icons8.com/color/48/bhim.png" width="25">
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    // 1. UPDATE THIS URL WITH YOUR GOOGLE SCRIPT URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzGAG5jWSwMGSHZNuFx-E5jo6jbkhoCzp9vzh9_jYd0rYPUFpBFZzuJjrBuIP4qvDQL/exec";
+    let subtotal = 0;
+    let shipping = 60;
 
     function loadCart() {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let container = document.getElementById('cart-items');
-        let total = 0;
-        container.innerHTML = "";
-        if(cart.length === 0) {
-            container.innerHTML = "<p class='text-center'>Your bag is empty!</p>";
-            document.getElementById('submitBtn').disabled = true;
-        }
-        cart.forEach(item => {
-            total += item.price * item.qty;
-            container.innerHTML += `
-                <div class="d-flex justify-content-between item-row small">
-                    <span>${item.name} (x${item.qty})</span>
-                    <span>₹${item.price * item.qty}</span>
-                </div>`;
-        });
-        document.getElementById('total-price').innerText = "₹" + total;
-        return total;
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const list = document.getElementById('cart-items-list');
+        subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        
+        list.innerHTML = cart.map(item => `
+            <div class="d-flex justify-content-between">
+                <span>${item.name} (x${item.qty})</span>
+                <span>₹${item.price * item.qty}</span>
+            </div>
+        `).join('');
+        
+        document.getElementById('subtotal').innerText = "₹" + subtotal;
+        calculateShipping();
     }
 
-    const finalAmount = loadCart();
+    function calculateShipping() {
+        const state = document.getElementById('custState').value;
+        const address = document.getElementById('custAddress').value.toLowerCase();
+        const note = document.getElementById('shipping-note');
+        
+        // Local Free Delivery Check
+        const localAreas = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur'];
+        const isLocal = localAreas.some(area => address.includes(area));
+
+        if (isLocal) {
+            shipping = 0;
+            note.innerText = "✨ Local Free Delivery applied!";
+        } else if (state === "Gujarat") {
+            shipping = 50;
+            note.innerText = "Gujarat Standard Shipping applied.";
+        } else {
+            shipping = 60;
+            note.innerText = "All India Standard Shipping applied.";
+        }
+
+        document.getElementById('shipping-fee').innerText = "₹" + shipping;
+        document.getElementById('grand-total').innerText = "₹" + (subtotal + shipping);
+    }
 
     function processOrder() {
-        // Get all elements
         const name = document.getElementById('custName').value;
-        const email = document.getElementById('custEmail').value;
         const phone = document.getElementById('custPhone').value;
-        const house = document.getElementById('addrHouse').value;
-        const area = document.getElementById('addrArea').value;
-        const city = document.getElementById('addrCity').value;
-        const pin = document.getElementById('addrPin').value;
+        const state = document.getElementById('custState').value;
+        const address = document.getElementById('custAddress').value;
+        const finalAmount = subtotal + shipping;
 
-        // Validation check
-        if (!name || !email || !phone || !house || !area || !city || !pin) {
-            alert("Oops! Please fill in all the details for delivery. 🧶");
+        if(!name || phone.length < 10 || !state || !address) {
+            // No alert popups, just change button text temporarily
+            const btn = document.querySelector('.btn-confirm');
+            btn.innerText = "Please fill all details!";
+            btn.style.background = "#FF6B6B";
+            setTimeout(() => { btn.innerText = "Confirm & Pay"; btn.style.background = "#C9B1FF"; }, 2000);
             return;
         }
 
-        const btn = document.getElementById('submitBtn');
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        const fullAddr = `${house}, ${area}, ${city} - ${pin}`;
-        const orderData = { name, email, phone, address: fullAddr, amount: finalAmount };
-
+        // Send to Apps Script (Replace with your actual URL)
+        const scriptURL = "YOUR_APPS_SCRIPT_URL_HERE";
+        
         fetch(scriptURL, {
             method: 'POST',
-            mode: 'no-cors',
-            cache: 'no-cache',
-            body: JSON.stringify(orderData)
-        })
-        .then(() => {
-            document.getElementById('main-content').innerHTML = `
-                <div class="text-center py-4">
-                    <h2 style="color: #C9B1FF;">Order Placed! 🥳</h2>
-                    <div class="p-4 my-4" style="background: #FFF3AD; border-radius: 20px; border: 2px dashed #FFCAF2;">
-                        <h6 class="mb-3">Final Step: Payment 💰</h6>
-                        <p>Total to Pay: <b>₹${finalAmount}</b></p>
-                        <a href="upi://pay?pa=kashishsoni0505-1@okaxis&pn=NiftyKnots&am=${finalAmount}&cu=INR" class="btn btn-primary w-100 py-3 mb-3" style="border-radius: 50px; font-weight:bold; background:#C9B1FF; border:none;">Tap to Pay Now</a>
-                        <p class="small text-muted mb-2">OR Scan QR Code:</p>
-                        <img src="myqr.png" style="width: 180px; border-radius: 10px; background: white; padding: 5px;">
-                    </div>
-                    <p class="small">Check your email for confirmation! We will start making your order soon. 🧶</p>
-                    <button onclick="window.location.href='index.html'" class="btn btn-sm btn-outline-secondary">Return Home</button>
-                </div>`;
-            localStorage.setItem("cart", "[]");
-        })
-        .catch(err => {
-            alert("Something went wrong. Please try again!");
-            btn.innerText = "Confirm Order & Pay";
-            btn.disabled = false;
+            body: JSON.stringify({
+                name: name,
+                phone: "+91" + phone,
+                address: address + ", " + state,
+                amount: finalAmount,
+                email: document.getElementById('custEmail').value
+            })
+        }).then(() => {
+            // Success Redirect or Payment UI
+            window.location.href = `payment.html?amt=${finalAmount}`;
         });
     }
+
+    window.onload = loadCart;
 </script>
 </body>
 </html>
