@@ -47,8 +47,24 @@
             <option value="Other">Outside Gujarat (All India)</option>
         </select>
 
-        <textarea id="custAddress" class="form-control mb-3" placeholder="Full Address (include City/Area for free delivery check)" oninput="calculateShipping()"></textarea>
+<div class="p-3 bg-white rounded-4 shadow-sm mb-3">
+    <h6 class="fw-bold mb-3">Delivery Address</h6>
+    <input type="text" id="custName" class="form-control mb-2" placeholder="Full Name">
+    
+    <div class="input-group mb-2">
+        <span class="input-group-text">🇮🇳 +91</span>
+        <input type="tel" id="custPhone" class="form-control" placeholder="WhatsApp Number">
+    </div>
 
+    <select id="custState" class="form-select mb-2" onchange="calcShipping()">
+        <option value="">Select Area</option>
+        <option value="Gujarat">Gujarat (₹50 Shipping)</option>
+        <option value="Other">Other India (₹60 Shipping)</option>
+    </select>
+
+    <input type="text" id="custCity" class="form-control mb-2" placeholder="City">
+    <textarea id="custAddress" class="form-control" placeholder="House No, Landmark, Area..." oninput="calcShipping()"></textarea>
+</div>
         <button class="btn btn-confirm w-100" onclick="processOrder()">Confirm & Pay</button>
 
         <div class="text-center mt-3">
