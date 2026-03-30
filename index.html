@@ -3,134 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light"> <title>Nifty Knots | Handmade with Love 🧶</title>
+    <meta name="color-scheme" content="light">
+    <title>Nifty Knots | Crochet Shop 🧶</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --pastel-purple: #C9B1FF; --pastel-yellow: #FFF3AD; --pastel-pink: #FFCAF2; }
-        body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; color: #444; }
+        :root { --p-purple: #C9B1FF; --p-yellow: #FFF3AD; --p-pink: #FFCAF2; }
+        body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; }
         
-        /* Navbar & Cart Badge */
-        .navbar { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
-        .cart-icon-wrapper { position: relative; cursor: pointer; }
-        #cart-badge { 
-            position: absolute; top: -5px; right: -8px; 
-            background: #FF6B6B; color: white; font-size: 10px; 
-            padding: 2px 6px; border-radius: 50%; font-weight: bold;
-            display: none; 
-        }
+        /* Category Navigation */
+        .category-nav { display: flex; overflow-x: auto; gap: 10px; padding: 15px; background: white; white-space: nowrap; scrollbar-width: none; }
+        .cat-item { padding: 8px 20px; border-radius: 50px; background: #f0f0f0; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+        .cat-active { background: var(--p-purple); color: white; }
 
-        /* Product Cards */
-        .product-card { border: none; border-radius: 20px; transition: 0.3s; background: white; overflow: hidden; margin-bottom: 20px; }
-        .product-img { height: 200px; object-fit: cover; cursor: pointer; }
+        /* Cart Badge */
+        .cart-btn { position: relative; cursor: pointer; }
+        #cart-badge { position: absolute; top: -5px; right: -5px; background: #FF6B6B; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; display: none; }
+
+        /* Product Grid */
+        .product-card { border: none; border-radius: 20px; background: white; overflow: hidden; margin-bottom: 15px; }
+        .product-img { height: 180px; object-fit: cover; cursor: pointer; }
         
-        /* Blinkit Style Buttons */
-        .btn-container { min-height: 40px; display: flex; align-items: center; justify-content: center; }
-        .btn-add { 
-            background: white; border: 1px solid var(--pastel-purple); color: var(--pastel-purple);
-            font-weight: bold; border-radius: 8px; width: 100%; padding: 5px; transition: 0.2s;
-        }
-        .btn-add:hover { background: var(--pastel-purple); color: white; }
-        
-        .qty-controls { 
-            display: flex; align-items: center; justify-content: space-between; 
-            background: var(--pastel-purple); color: white; border-radius: 8px; width: 100%; padding: 5px 10px;
-        }
-        .qty-controls button { background: none; border: none; color: white; font-weight: bold; font-size: 18px; width: 30px; }
+        /* Blinkit Buttons */
+        .btn-qty-container { min-height: 35px; }
+        .add-btn { width: 100%; border: 1px solid var(--p-purple); color: var(--p-purple); background: white; border-radius: 8px; font-weight: bold; }
+        .qty-controls { display: flex; justify-content: space-between; align-items: center; background: var(--p-purple); color: white; border-radius: 8px; padding: 0 10px; }
+        .qty-controls button { background: none; border: none; color: white; font-weight: bold; font-size: 20px; }
     </style>
 </head>
 <body>
 
-<nav class="navbar px-3 py-2">
-    <span class="navbar-brand fw-bold" style="color: var(--pastel-purple);">Nifty Knots 🧶</span>
-    <div class="cart-icon-wrapper" onclick="window.location.href='cart.html'">
-        <img src="https://img.icons8.com/external-flat-icons-inmotus-design/67/external-Cart-shopping-cart-flat-icons-inmotus-design-2.png" width="30">
+<nav class="navbar bg-white px-3 sticky-top shadow-sm">
+    <span class="fw-bold" style="color: var(--p-purple); font-size: 1.2rem;">Nifty Knots 🧶</span>
+    <div class="cart-btn" onclick="window.location.href='cart.html'">
+        <img src="https://img.icons8.com/color/48/shopping-cart.png" width="30">
         <span id="cart-badge">0</span>
     </div>
 </nav>
 
-<div class="container mt-4">
-    <div class="row" id="product-list">
-        </div>
+<div class="category-nav shadow-sm" id="category-bar">
+    <div class="cat-item cat-active" onclick="filterCat('All')">All</div>
+    <div class="cat-item" onclick="filterCat('Keychains')">Keychains</div>
+    <div class="cat-item" onclick="filterCat('Coasters')">Coasters</div>
+    <div class="cat-item" onclick="filterCat('Toys')">Toys</div>
+    <div class="cat-item" onclick="filterCat('Accessories')">Accessories</div>
+</div>
+
+<div class="container mt-3">
+    <div class="row g-2" id="product-display"></div>
 </div>
 
 <script>
+    // 🧶 ADD ALL YOUR PRODUCTS HERE 🧶
     const products = [
-        { id: "p1", name: "Crochet Bee", price: 150, img: "bee.jpg", desc: "A cute little bumblebee friend." },
-        { id: "p2", name: "Daisy Coaster", price: 80, img: "coaster.jpg", desc: "Pastel coasters for your coffee." },
-        { id: "p3", name: "Flower Keychain", price: 120, img: "keychain.jpg", desc: "Perfect for your bags." }
+        { id: "k1", cat: "Keychains", name: "Flower Keychain", price: 120, img: "flower.jpg", desc: "A soft handmade flower for your keys." },
+        { id: "c1", cat: "Coasters", name: "Daisy Coaster", price: 80, img: "coaster.jpg", desc: "Keep your desk pretty and dry." },
+        { id: "t1", cat: "Toys", name: "Bee Plushie", price: 250, img: "bee.jpg", desc: "Squishy handmade bumblebee." },
+        // Add more products with the same format...
     ];
 
-    function loadProducts() {
-        const list = document.getElementById('product-list');
-        list.innerHTML = products.map(p => `
-            <div class="col-6 col-md-4">
-                <div class="product-card shadow-sm">
-                    <img src="${p.img}" class="product-img w-100" onclick="viewProduct('${p.id}')">
-                    <div class="p-2 text-center">
-                        <h6 class="mb-1">${p.name}</h6>
-                        <p class="small mb-2 text-muted">₹${p.price}</p>
-                        <div id="btn-container-${p.id}" class="btn-container">
-                            <button class="btn-add" onclick="changeQty('${p.id}', 1)">ADD</button>
-                        </div>
+    let currentCat = "All";
+
+    function filterCat(cat) {
+        currentCat = cat;
+        // UI color change
+        document.querySelectorAll('.cat-item').forEach(el => {
+            el.classList.remove('cat-active');
+            if(el.innerText === cat) el.classList.add('cat-active');
+        });
+        renderProducts();
+    }
+
+    function renderProducts() {
+        const display = document.getElementById('product-display');
+        const filtered = currentCat === "All" ? products : products.filter(p => p.cat === currentCat);
+        
+        display.innerHTML = filtered.map(p => `
+            <div class="col-6">
+                <div class="product-card shadow-sm p-2">
+                    <img src="${p.img}" class="product-img w-100 mb-2 rounded" onclick="window.location.href='product-detail.html?id=${p.id}'">
+                    <h6 class="mb-0 text-truncate">${p.name}</h6>
+                    <p class="small text-muted mb-2">₹${p.price}</p>
+                    <div id="qty-${p.id}" class="btn-qty-container">
+                        ${getButtonUI(p.id)}
                     </div>
                 </div>
             </div>
         `).join('');
-        updateAllUI();
     }
 
-    function changeQty(id, delta) {
+    function getButtonUI(id) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let index = cart.findIndex(item => item.id === id);
-        let product = products.find(p => p.id === id);
-
-        if (index > -1) {
-            cart[index].qty += delta;
-            if (cart[index].qty <= 0) cart.splice(index, 1);
-        } else if (delta > 0) {
-            cart.push({ ...product, qty: 1 });
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateAllUI();
+        let item = cart.find(i => i.id === id);
+        if(!item) return `<button class="add-btn py-1" onclick="updateQty('${id}', 1)">ADD</button>`;
+        return `<div class="qty-controls">
+            <button onclick="updateQty('${id}', -1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateQty('${id}', 1)">+</button>
+        </div>`;
     }
 
-    function updateAllUI() {
+    function updateQty(id, delta) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        products.forEach(p => {
-            const container = document.getElementById(`btn-container-${p.id}`);
-            const item = cart.find(i => i.id === p.id);
-            if (item) {
-                container.innerHTML = `
-                    <div class="qty-controls">
-                        <button onclick="changeQty('${p.id}', -1)">−</button>
-                        <span>${item.qty}</span>
-                        <button onclick="changeQty('${p.id}', 1)">+</button>
-                    </div>`;
-            } else {
-                container.innerHTML = `<button class="btn-add" onclick="changeQty('${p.id}', 1)">ADD</button>`;
-            }
-        });
-
-        // Update Cart Badge Notification
-        const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
-        const badge = document.getElementById('cart-badge');
-        if(totalItems > 0) {
-            badge.innerText = totalItems;
-            badge.style.display = 'block';
+        let pIndex = cart.findIndex(i => i.id === id);
+        if(pIndex > -1) {
+            cart[pIndex].qty += delta;
+            if(cart[pIndex].qty <= 0) cart.splice(pIndex, 1);
         } else {
-            badge.style.display = 'none';
+            let p = products.find(i => i.id === id);
+            cart.push({...p, qty: 1});
         }
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderProducts();
+        updateBadge();
     }
 
-    // Opens a mock description page (You can later make product.html)
-    function viewProduct(id) {
-        const p = products.find(prod => prod.id === id);
-        alert(`${p.name}\n\n${p.desc}\n\nPrice: ₹${p.price}`);
+    function updateBadge() {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let count = cart.reduce((s, i) => s + i.qty, 0);
+        let b = document.getElementById('cart-badge');
+        b.style.display = count > 0 ? 'block' : 'none';
+        b.innerText = count;
     }
 
-    window.onload = loadProducts;
+    window.onload = () => { renderProducts(); updateBadge(); };
 </script>
 </body>
 </html>
