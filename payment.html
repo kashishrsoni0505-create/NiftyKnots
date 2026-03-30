@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Complete Payment | Nifty Knots 🧶</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; text-align: center; padding: 20px; }
+        .payment-card { background: white; border-radius: 30px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .qr-code { width: 220px; height: 220px; border: 8px solid #FFF3AD; border-radius: 20px; margin: 20px 0; }
+        .btn-pay { background: #C9B1FF; color: white; border-radius: 50px; font-weight: bold; padding: 15px; border: none; width: 100%; transition: 0.3s; }
+    </style>
+</head>
+<body>
+
+<div class="container" style="max-width: 450px;">
+    <div class="payment-card">
+        <h2 style="color: #C9B1FF;">Almost There! ✨</h2>
+        <p class="text-muted">Please complete the payment to confirm your handcrafted order.</p>
+        
+        <div class="p-3 mb-3" style="background: #f8f9fa; border-radius: 15px;">
+            <h4 class="mb-0">Amount: <span id="display-amt" style="color: #444;">₹0</span></h4>
+        </div>
+
+        <img src="myqr.png" class="qr-code" alt="Scan to Pay">
+        
+        <button class="btn btn-pay mb-3" onclick="openUPI()">🚀 Tap to Pay Now</button>
+        
+        <div class="p-3" style="background: #FFF3AD; border-radius: 15px; font-size: 0.85rem;">
+            <b>Step 2:</b> After paying, send a screenshot to <b>+91 8487990840</b> on WhatsApp!
+        </div>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amt') || "0";
+    document.getElementById('display-amt').innerText = "₹" + amount;
+
+    function openUPI() {
+        const upiLink = `upi://pay?pa=kashishrsoni0505-1@okaxis&pn=NiftyKnots&am=${amount}&cu=INR`;
+        window.location.href = upiLink;
+    }
+</script>
+</body>
+</html>
