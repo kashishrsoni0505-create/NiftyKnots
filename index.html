@@ -4,49 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
-    <title>Nifty Knots | Crochet Shop 🧶</title>
+    <title>Nifty Knots | Shop 🧶</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --p-purple: #C9B1FF; --p-yellow: #FFF3AD; --p-pink: #FFCAF2; }
+        :root { --p-purple: #C9B1FF; --p-yellow: #FFF3AD; }
         body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; }
-        
-        /* Category Navigation */
-        .category-nav { display: flex; overflow-x: auto; gap: 10px; padding: 15px; background: white; white-space: nowrap; scrollbar-width: none; }
-        .cat-item { padding: 8px 20px; border-radius: 50px; background: #f0f0f0; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
-        .cat-active { background: var(--p-purple); color: white; }
-
-        /* Cart Badge */
+        .category-nav { display: flex; overflow-x: auto; gap: 10px; padding: 15px; background: white; white-space: nowrap; border-bottom: 1px solid #eee; scrollbar-width: none; }
+        .cat-item { padding: 8px 18px; border-radius: 50px; background: #f8f9fa; cursor: pointer; font-weight: 600; font-size: 0.85rem; border: 1px solid #eee; }
+        .cat-active { background: var(--p-purple); color: white; border-color: var(--p-purple); }
         .cart-btn { position: relative; cursor: pointer; }
         #cart-badge { position: absolute; top: -5px; right: -5px; background: #FF6B6B; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; display: none; }
-
-        /* Product Grid */
         .product-card { border: none; border-radius: 20px; background: white; overflow: hidden; margin-bottom: 15px; }
-        .product-img { height: 180px; object-fit: cover; cursor: pointer; }
-        
-        /* Blinkit Buttons */
-        .btn-qty-container { min-height: 35px; }
-        .add-btn { width: 100%; border: 1px solid var(--p-purple); color: var(--p-purple); background: white; border-radius: 8px; font-weight: bold; }
-        .qty-controls { display: flex; justify-content: space-between; align-items: center; background: var(--p-purple); color: white; border-radius: 8px; padding: 0 10px; }
-        .qty-controls button { background: none; border: none; color: white; font-weight: bold; font-size: 20px; }
+        .product-img { height: 160px; object-fit: cover; cursor: pointer; }
+        .add-btn { width: 100%; border: 1px solid var(--p-purple); color: var(--p-purple); background: white; border-radius: 12px; font-weight: bold; padding: 5px; }
+        .qty-controls { display: flex; justify-content: space-between; align-items: center; background: var(--p-purple); color: white; border-radius: 12px; padding: 5px 12px; }
+        .qty-controls button { background: none; border: none; color: white; font-weight: bold; font-size: 18px; }
     </style>
 </head>
 <body>
 
 <nav class="navbar bg-white px-3 sticky-top shadow-sm">
-    <span class="fw-bold" style="color: var(--p-purple); font-size: 1.2rem;">Nifty Knots 🧶</span>
+    <span class="fw-bold" style="color: var(--p-purple); font-size: 1.3rem;">Nifty Knots 🧶</span>
     <div class="cart-btn" onclick="window.location.href='cart.html'">
         <img src="https://img.icons8.com/color/48/shopping-cart.png" width="30">
         <span id="cart-badge">0</span>
     </div>
 </nav>
 
-<div class="category-nav shadow-sm" id="category-bar">
+<div class="category-nav shadow-sm">
     <div class="cat-item cat-active" onclick="filterCat('All')">All</div>
     <div class="cat-item" onclick="filterCat('Keychains')">Keychains</div>
-    <div class="cat-item" onclick="filterCat('Coasters')">Coasters</div>
-    <div class="cat-item" onclick="filterCat('Toys')">Toys</div>
+    <div class="cat-item" onclick="filterCat('Scrunchies')">Scrunchies</div>
     <div class="cat-item" onclick="filterCat('Accessories')">Accessories</div>
+    <div class="cat-item" onclick="filterCat('Purse')">Purse</div>
 </div>
 
 <div class="container mt-3">
@@ -54,22 +45,23 @@
 </div>
 
 <script>
-    // 🧶 ADD ALL YOUR PRODUCTS HERE 🧶
+    // DATA LOADED FROM YOUR FILES [cite: 1]
     const products = [
-        { id: "k1", cat: "Keychains", name: "Flower Keychain", price: 120, img: "flower.jpg", desc: "A soft handmade flower for your keys." },
-        { id: "c1", cat: "Coasters", name: "Daisy Coaster", price: 80, img: "coaster.jpg", desc: "Keep your desk pretty and dry." },
-        { id: "t1", cat: "Toys", name: "Bee Plushie", price: 250, img: "bee.jpg", desc: "Squishy handmade bumblebee." },
-        // Add more products with the same format...
+        { id: "k1", cat: "Keychains", name: "Red Pearl Flower", price: 30, img: "red_pearl.png", desc: "Elegant red pearl keychain." },
+        { id: "k2", cat: "Keychains", name: "Blue Keychain", price: 50, img: "Blue Keychain.png", desc: "Bright blue handmade charm." },
+        { id: "s1", cat: "Scrunchies", name: "Pink & White Double", price: 60, img: "rose_white_double.png", desc: "Soft double-color scrunchie." },
+        { id: "s2", cat: "Scrunchies", name: "Unicorn Double", price: 60, img: "unicorn_double.png", desc: "Pastel unicorn colors." },
+        { id: "a1", cat: "Accessories", name: "Flower Hair Clip", price: 20, img: "red_flower_clip.png", desc: "Cute floral hair accessory." },
+        { id: "p1", cat: "Purse", name: "Granny Square Pouch", price: 100, img: "square_pouch.png", desc: "Vintage style square pouch." },
+        { id: "p2", cat: "Purse", name: "Mini Potli", price: 40, img: "mini_potli.png", desc: "Perfect small storage pouch." }
     ];
 
     let currentCat = "All";
 
     function filterCat(cat) {
         currentCat = cat;
-        // UI color change
         document.querySelectorAll('.cat-item').forEach(el => {
-            el.classList.remove('cat-active');
-            if(el.innerText === cat) el.classList.add('cat-active');
+            el.classList.toggle('cat-active', el.innerText === cat);
         });
         renderProducts();
     }
@@ -77,16 +69,13 @@
     function renderProducts() {
         const display = document.getElementById('product-display');
         const filtered = currentCat === "All" ? products : products.filter(p => p.cat === currentCat);
-        
         display.innerHTML = filtered.map(p => `
             <div class="col-6">
                 <div class="product-card shadow-sm p-2">
-                    <img src="${p.img}" class="product-img w-100 mb-2 rounded" onclick="window.location.href='product-detail.html?id=${p.id}'">
-                    <h6 class="mb-0 text-truncate">${p.name}</h6>
-                    <p class="small text-muted mb-2">₹${p.price}</p>
-                    <div id="qty-${p.id}" class="btn-qty-container">
-                        ${getButtonUI(p.id)}
-                    </div>
+                    <img src="${p.img}" class="product-img w-100 rounded-4" onclick="window.location.href='product.html?id=${p.id}'">
+                    <h6 class="mt-2 mb-0 small fw-bold">${p.name}</h6>
+                    <span class="text-muted small">₹${p.price}</span>
+                    <div id="qty-${p.id}" class="mt-2" style="min-height:35px;">${getButtonUI(p.id)}</div>
                 </div>
             </div>
         `).join('');
@@ -95,12 +84,8 @@
     function getButtonUI(id) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         let item = cart.find(i => i.id === id);
-        if(!item) return `<button class="add-btn py-1" onclick="updateQty('${id}', 1)">ADD</button>`;
-        return `<div class="qty-controls">
-            <button onclick="updateQty('${id}', -1)">−</button>
-            <span>${item.qty}</span>
-            <button onclick="updateQty('${id}', 1)">+</button>
-        </div>`;
+        if(!item) return `<button class="add-btn" onclick="updateQty('${id}', 1)">ADD</button>`;
+        return `<div class="qty-controls"><button onclick="updateQty('${id}', -1)">−</button><span>${item.qty}</span><button onclick="updateQty('${id}', 1)">+</button></div>`;
     }
 
     function updateQty(id, delta) {
@@ -125,7 +110,6 @@
         b.style.display = count > 0 ? 'block' : 'none';
         b.innerText = count;
     }
-
     window.onload = () => { renderProducts(); updateBadge(); };
 </script>
 </body>
