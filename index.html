@@ -8,25 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --p-purple: #C9B1FF; }
-        body { background-color: #FFF9E3 !important; font-family: 'Quicksand', sans-serif; color: #444; }
+        /* THE NUCLEAR LIGHT MODE FIX */
+        :root { color-scheme: light !important; }
+        html, body { background-color: #FFF9E3 !important; color: #444 !important; }
+        * { border-color: #eee !important; }
+
         .category-nav { display: flex; overflow-x: auto; gap: 10px; padding: 15px; background: white; white-space: nowrap; scrollbar-width: none; }
-        .cat-item { padding: 8px 18px; border-radius: 50px; background: #f8f9fa; cursor: pointer; font-weight: 600; font-size: 0.8rem; border: 1px solid #eee; }
-        .cat-active { background: var(--p-purple); color: white; border-color: var(--p-purple); }
-        .product-card { border: none; border-radius: 20px; background: white; overflow: hidden; margin-bottom: 15px; }
+        .cat-item { padding: 8px 18px; border-radius: 50px; background: #f8f9fa; cursor: pointer; font-weight: 600; font-size: 0.8rem; color: #444; }
+        .cat-active { background: #C9B1FF !important; color: white !important; }
+        .product-card { border: none; border-radius: 20px; background: white !important; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
         .product-img { height: 160px; object-fit: cover; cursor: pointer; }
-        .add-btn { width: 100%; border: 1px solid var(--p-purple); color: var(--p-purple); background: white; border-radius: 12px; font-weight: bold; padding: 5px; }
-        .qty-controls { display: flex; justify-content: space-between; align-items: center; background: var(--p-purple); color: white; border-radius: 12px; padding: 5px 12px; }
-        .qty-controls button { background: none; border: none; color: white; font-weight: bold; font-size: 18px; }
+        .add-btn { width: 100%; border: 1px solid #C9B1FF; color: #C9B1FF; background: white; border-radius: 12px; font-weight: bold; padding: 5px; }
     </style>
 </head>
 <body>
 
 <nav class="navbar bg-white px-3 sticky-top shadow-sm">
-    <span class="fw-bold" style="color: var(--p-purple); font-size: 1.3rem;">Nifty Knots 🧶</span>
-    <div onclick="window.location.href='cart.html'" style="position:relative; cursor:pointer;">
+    <span class="fw-bold" style="color: #C9B1FF; font-size: 1.3rem;">Nifty Knots 🧶</span>
+    <div onclick="window.location.href='cart.html'" style="cursor:pointer;">
         <img src="https://img.icons8.com/color/48/shopping-cart.png" width="30">
-        <span id="cart-badge" style="position:absolute; top:-5px; right:-5px; background:#FF6B6B; color:white; border-radius:50%; padding:2px 6px; font-size:10px; display:none;">0</span>
     </div>
 </nav>
 
@@ -45,13 +45,10 @@
 
 <script>
     const products = [
-        { id: "k1", cat: "Keychains", name: "RedPearl Flower", price: 30, img: "red_pearl.png", desc: "Handmade flower keychain with red pearls." },
-        { id: "k2", cat: "Keychains", name: "Blue Keychain", price: 50, img: "Blue Keychain.png", desc: "Hand-knitted blue charm." },
-        { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 30, img: "red_scrunchie.png", desc: "Simple red crochet scrunchie." },
-        { id: "h2", cat: "Hair Accessories", name: "Flower Hair Clip", price: 20, img: "red_flower_clip.png", desc: "Cute red flower hair clip." },
-        { id: "p1", cat: "Purse/Pouch", name: "Granny Square Pouch", price: 100, img: "square_pouch.png", desc: "Beautiful granny square design pouch." },
-        { id: "p2", cat: "Purse/Pouch", name: "Mini Potli", price: 40, img: "mini_potli.png", desc: "Perfect mini storage potli." },
-        { id: "s1", cat: "Soft Toy", name: "Mini Rabbit", price: 150, img: "mini_rabbit_soft_toy.png", desc: "Soft and squishy mini rabbit." }
+        { id: "k1", cat: "Keychains", name: "RedPearl Flower", price: 30, img: "red_pearl.png", desc: "Handmade flower keychain[cite: 1]." },
+        { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 30, img: "red_scrunchie.png", desc: "Simple crochet scrunchie[cite: 1]." },
+        { id: "p1", cat: "Purse/Pouch", name: "Granny Square Pouch", price: 100, img: "square_pouch.png", desc: "Handmade square pouch[cite: 1]." },
+        { id: "s1", cat: "Soft Toy", name: "Mini Rabbit", price: 150, img: "mini_rabbit_soft_toy.png", desc: "Handmade soft toy[cite: 1]." }
     ];
 
     let currentCat = "All";
@@ -66,46 +63,16 @@
         const filtered = currentCat === "All" ? products : products.filter(p => p.cat.includes(currentCat));
         display.innerHTML = filtered.map(p => `
             <div class="col-6">
-                <div class="product-card shadow-sm p-2">
+                <div class="product-card p-2">
                     <img src="${p.img}" class="product-img w-100 rounded-4" onclick="window.location.href='product.html?id=${p.id}'">
                     <h6 class="mt-2 mb-0 small fw-bold">${p.name}</h6>
                     <span class="text-muted small">₹${p.price}</span>
-                    <div id="qty-${p.id}" class="mt-2" style="min-height:35px;">${getButtonUI(p.id)}</div>
+                    <button class="add-btn mt-2" onclick="window.location.href='product.html?id=${p.id}'">VIEW</button>
                 </div>
             </div>
         `).join('');
     }
-
-    function getButtonUI(id) {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let item = cart.find(i => i.id === id);
-        if(!item) return `<button class="add-btn" onclick="updateQty('${id}', 1)">ADD</button>`;
-        return `<div class="qty-controls"><button onclick="updateQty('${id}', -1)">−</button><span>${item.qty}</span><button onclick="updateQty('${id}', 1)">+</button></div>`;
-    }
-
-    function updateQty(id, delta) {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let pIndex = cart.findIndex(i => i.id === id);
-        if(pIndex > -1) {
-            cart[pIndex].qty += delta;
-            if(cart[pIndex].qty <= 0) cart.splice(pIndex, 1);
-        } else {
-            let p = products.find(i => i.id === id);
-            cart.push({...p, qty: 1});
-        }
-        localStorage.setItem("cart", JSON.stringify(cart));
-        renderProducts();
-        updateBadge();
-    }
-
-    function updateBadge() {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let count = cart.reduce((s, i) => s + i.qty, 0);
-        let b = document.getElementById('cart-badge');
-        b.style.display = count > 0 ? 'block' : 'none';
-        b.innerText = count;
-    }
-    window.onload = () => { renderProducts(); updateBadge(); };
+    window.onload = renderProducts;
 </script>
 </body>
 </html>
