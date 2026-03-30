@@ -3,50 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light">
-    <title>Details | Nifty Knots</title>
+    <title>Nifty Knots | Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background: #FFF9E3; font-family: 'Quicksand', sans-serif; }
-        .back-btn { position: absolute; top: 20px; left: 20px; z-index: 100; background: white; border-radius: 50%; padding: 5px; }
-        .big-img { width: 100%; height: 400px; object-fit: cover; }
-        .detail-box { background: white; margin-top: -30px; border-radius: 35px 35px 0 0; padding: 30px; position: relative; }
-        .buy-now { background: #C9B1FF; color: white; border-radius: 50px; font-weight: bold; width: 100%; padding: 15px; border: none; }
+        .back-nav { position: absolute; top: 15px; left: 15px; background: white; border-radius: 50%; padding: 8px; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .detail-img { width: 100%; height: 380px; object-fit: cover; }
+        .detail-card { background: white; border-radius: 35px 35px 0 0; margin-top: -30px; padding: 30px; position: relative; }
+        .btn-buy { background: #C9B1FF; color: white; border-radius: 50px; width: 100%; padding: 15px; border: none; font-weight: bold; }
     </style>
 </head>
 <body>
-
-<div id="detail-ui"></div>
-
+    <div id="detail-ui"></div>
 <script>
-    // Copy the exact same product list from index.html here
-    const products = [
-        { id: "k1", cat: "Keychains", name: "Flower Keychain", price: 120, img: "flower.jpg", desc: "Handmade with high-quality yarn." },
-        { id: "c1", cat: "Coasters", name: "Daisy Coaster", price: 80, img: "coaster.jpg", desc: "Perfect for your coffee mugs." },
-        { id: "t1", cat: "Toys", name: "Bee Plushie", price: 250, img: "bee.jpg", desc: "Cute and squishy bee." }
-    ];
-
+    // PASTE THE SAME 'products' LIST FROM index.html HERE
+    const products = [ /* ... Use same list as above ... */ ];
     const pid = new URLSearchParams(window.location.search).get('id');
     const p = products.find(i => i.id === pid);
 
     if(p) {
         document.getElementById('detail-ui').innerHTML = `
-            <div class="back-btn shadow" onclick="history.back()"><img src="https://img.icons8.com/ios-filled/50/left.png" width="25"></div>
-            <img src="${p.img}" class="big-img">
-            <div class="detail-box shadow">
+            <div class="back-nav" onclick="history.back()">←</div>
+            <img src="${p.img}" class="detail-img">
+            <div class="detail-card shadow">
                 <h2 style="color: #C9B1FF;">${p.name}</h2>
-                <h4 class="mb-3">₹${p.price}</h4>
+                <h4 class="mb-3 text-dark">₹${p.price}</h4>
                 <p class="text-muted">${p.desc}</p>
                 <div class="mt-5">
-                    <button class="buy-now shadow" onclick="buyNow()">Confirm & Buy Now ✨</button>
+                    <button class="btn-buy" onclick="buyNow()">Confirm & Buy ✨</button>
                 </div>
             </div>
         `;
     }
-
     function buyNow() {
-        let cart = [{...p, qty: 1}];
-        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("cart", JSON.stringify([{...p, qty: 1}]));
         window.location.href = 'cart.html';
     }
 </script>
