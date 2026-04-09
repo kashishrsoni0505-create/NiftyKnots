@@ -10,34 +10,59 @@
       <div id="orderSummary" class="mb-3 p-2 bg-light rounded">
           </div>
 
-      <button type="submit" class="btn btn-success w-100">Proceed to UPI Payment 💳</button>
+      <button type="submit" id="submitBtn" class="btn btn-success w-100">Proceed to UPI Payment 💳</button>
     </form>
   </div>
 </div>
 
 <script>
-document.getElementById('orderForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData);
-    
-    // 1. Get Cart Data
-    const cart = JSON.parse(localStorage.getItem(cartKey));
-    data.orderDetails = JSON.stringify(cart);
-    data.total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+// Use a self-executing function to keep variables private and prevent duplicates
+(function() {
+    const cartKey = 'cartKey'; // Ensure this matches your cart's name in localStorage
+    const form = document.getElementById('orderForm');
 
-    // 2. Send to Google Sheets (via Webhook)
-    fetch('YOUR_GOOGLE_SCRIPT_URL', {
-        method: 'POST',
-        body: JSON.stringify(data)
-    }).then(res => {
-        // 3. Trigger UPI Payment
-        const upiUrl = generateUPILink(data.total, Date.now());
-        window.location.href = upiUrl;
-        
-        // Clear cart after payment intent
-        localStorage.removeItem(cartKey);
-        alert("Redirecting to your Payment App...");
-    });
-});
+    // FIX: Check if the listener is already attached to prevent "two times" error
+    if (form && !form.dataset.listenerAttached) {
+        form.dataset.listenerAttached = "true";
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; // Prevent double clicking
+            btn.innerText = "Processing...";
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // 1. Get Cart Data
+            const rawCart = localStorage.getItem(cartKey);
+            const cart = rawCart ? JSON.parse(rawCart) : [];
+            
+            data.orderDetails = JSON.stringify(cart);
+            data.total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            // 2. Send to Google Sheets (via Webhook)
+            fetch('https://script.google.com/macros/s/AKfycbzGAG5jWSwMGSHZNuFx-E5jo6jbkhoCzp9vzh9_jYd0rYPUFpBFZzuJjrBuIP4qvDQL/exec', {
+                method: 'POST',
+                mode: 'no-cors', // Helps prevent CORS issues with Google Scripts
+                body: JSON.stringify(data)
+            }).then(res => {
+                // 3. Trigger UPI Payment
+                // Assuming generateUPILink is defined in your other scripts
+                const upiUrl = generateUPILink(data.total, Date.now());
+                
+                // Clear cart after payment intent
+                localStorage.removeItem(cartKey);
+                alert("Redirecting to your Payment App...");
+                
+                window.location.href = upiUrl;
+            }).catch(err => {
+                console.error(err);
+                btn.disabled = false;
+                btn.innerText = "Proceed to UPI Payment 💳";
+            });
+        });
+    }
+})();
 </script>
