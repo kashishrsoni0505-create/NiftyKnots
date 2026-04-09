@@ -6,12 +6,14 @@
     <meta name="color-scheme" content="light">
     <title>Cart | Nifty Knots 🧶</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { color-scheme: light !important; }
         body { background-color: #FFF9E3 !important; font-family: 'Quicksand', sans-serif; color: #444 !important; }
         .glass-card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: none; }
         .btn-confirm { background: #C9B1FF; color: white; border-radius: 50px; font-weight: bold; padding: 16px; width: 100%; border: none; font-size: 1.1rem; }
-        .item-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.95rem; }
+        .delete-btn { color: #ff6b6b; cursor: pointer; margin-left: 15px; font-size: 1.1rem; }
     </style>
 </head>
 <body>
@@ -21,9 +23,9 @@
 
     <div class="glass-card mb-4">
         <h6 class="fw-bold mb-3">Items in Cart</h6>
-        <div id="cart-list" class="mb-3"></div>
+        <div id="cart-list"></div>
         <div class="d-flex justify-content-between fw-bold border-top pt-3 mt-2">
-            <span>Grand Total (incl. shipping):</span>
+            <span>Total Amount:</span>
             <span id="final-total" style="color: #C9B1FF; font-size: 1.2rem;">₹0</span>
         </div>
     </div>
@@ -32,102 +34,105 @@
         <h6 class="fw-bold mb-3">Delivery details</h6>
         <form id="orderForm">
             <input type="text" name="name" class="form-control mb-3" placeholder="Full Name" required>
-            
             <div class="input-group mb-3">
-                <span class="input-group-text bg-light">+91</span>
-                <input type="tel" name="phone" class="form-control" placeholder="WhatsApp Number" pattern="[0-9]{10}" required>
+                <span class="input-group-text">+91</span>
+                <input type="tel" name="phone" class="form-control" placeholder="WhatsApp Number" required>
             </div>
-
             <input type="email" name="email" class="form-control mb-3" placeholder="Email Address" required>
-
+            
             <select name="state" id="stateSelect" class="form-select mb-3" onchange="calcTotal()" required>
-                <option value="" disabled selected>Select State</option>
                 <option value="Gujarat">Gujarat (₹50 Shipping)</option>
                 <option value="Other">Outside Gujarat (₹60 Shipping)</option>
             </select>
 
             <input type="text" name="city" id="cityInput" class="form-control mb-3" placeholder="City" oninput="calcTotal()" required>
+            <textarea name="address" id="addressInput" class="form-control mb-4" placeholder="House No, Landmark, Area..." oninput="calcTotal()" required></textarea>
 
-            <textarea name="address" id="addressInput" class="form-control mb-4" rows="3" placeholder="House No, Street, Landmark, Pincode..." oninput="calcTotal()" required></textarea>
-
-            <button type="submit" id="submitBtn" class="btn-confirm">Confirm & Proceed to Pay ✨</button>
-            <p class="text-center text-muted mt-3 small">Double-check your details before confirming!</p>
+            <button type="submit" id="submitBtn" class="btn-confirm">Confirm & Proceed ✨</button>
         </form>
     </div>
 </div>
 
 <script>
-    const cartKey = 'cartKey';
+    // CRITICAL: Ensure this matches the key used in your index.html and product.html
+    const cartKey = 'cart'; 
 
-    // Calculate totals and shipping automatically
-    function calcTotal() {
-        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-        const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        
-        const state = document.getElementById('stateSelect').value;
-        const city = document.getElementById('cityInput').value.toLowerCase();
-        const address = document.getElementById('addressInput').value.toLowerCase();
-        
-        let shipping = (state === "Gujarat") ? 50 : 60;
-        
-        // Local Free Delivery (Ahmedabad Neighborhoods)
-        const local = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur'];
-        if (local.some(l => city.includes(l) || address.includes(l))) {
-            shipping = 0;
-        }
-
-        const grandTotal = subtotal + shipping;
-        document.getElementById('final-total').innerText = "₹" + grandTotal;
-        return grandTotal;
-    }
-
-    // Load items into the list
     function loadCart() {
         const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
         const container = document.getElementById('cart-list');
-        if(cart.length === 0) {
-            container.innerHTML = "<p class='text-muted'>Your cart is empty.</p>";
+        
+        if (cart.length === 0) {
+            container.innerHTML = "<p class='text-center text-muted py-3'>Your cart is empty!</p>";
+            document.getElementById('final-total').innerText = "₹0";
             return;
         }
-        container.innerHTML = cart.map(i => `
+
+        container.innerHTML = cart.map((item, index) => `
             <div class="item-row">
-                <span>${i.name} (x${i.qty})</span>
-                <span class="fw-bold">₹${i.price * i.qty}</span>
+                <div>
+                    <span class="fw-bold">${item.name}</span><br>
+                    <small class="text-muted">₹${item.price} x ${item.qty}</small>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="fw-bold">₹${item.price * item.qty}</span>
+                    <i class="fa-solid fa-trash-can delete-btn" onclick="removeItem(${index})"></i>
+                </div>
             </div>
         `).join('');
         calcTotal();
     }
 
-    // Handle the final form submission
+    function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        cart.splice(index, 1);
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        loadCart();
+    }
+
+    function calcTotal() {
+        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+        if(subtotal === 0) return 0;
+
+        const state = document.getElementById('stateSelect').value;
+        const city = document.getElementById('cityInput').value.toLowerCase();
+        const address = document.getElementById('addressInput').value.toLowerCase();
+        
+        let shipping = (state === "Gujarat") ? 50 : 60;
+        const local = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur'];
+        if (local.some(l => city.includes(l) || address.includes(l))) { shipping = 0; }
+
+        const total = subtotal + shipping;
+        document.getElementById('final-total').innerText = "₹" + total;
+        return total;
+    }
+
     document.getElementById('orderForm').onsubmit = function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerText = "Recording Order...";
+        btn.innerText = "Saving Order...";
 
-        const total = calcTotal();
         const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        const total = calcTotal();
         const formData = new FormData(this);
         const data = Object.fromEntries(formData);
         
-        // Add order metadata for Google Sheets/Email system
-        data.totalAmount = total;
-        data.itemsOrdered = JSON.stringify(cart);
-        data.fullAddress = `${data.address}, ${data.city}, ${data.state}`;
+        // Match these keys exactly to your Google Sheet column headers
+        data.total = total;
+        data.items = cart.map(i => `${i.name}(${i.qty})`).join(', ');
+        data.full_address = `${data.address}, ${data.city}, ${data.state}`;
 
-        // Send to your Google Apps Script
         fetch('https://script.google.com/macros/s/AKfycbzGAG5jWSwMGSHZNuFx-E5jo6jbkhoCzp9vzh9_jYd0rYPUFpBFZzuJjrBuIP4qvDQL/exec', {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify(data)
         }).then(() => {
-            // Once saved, redirect to payment
+            alert("Order placed! Sending to payment...");
             window.location.href = `payment.html?amt=${total}`;
-        }).catch(err => {
-            console.error(err);
-            alert("Error saving order. Please try again.");
+        }).catch(() => {
             btn.disabled = false;
-            btn.innerText = "Confirm & Proceed to Pay ✨";
+            btn.innerText = "Confirm & Proceed ✨";
         });
     };
 
