@@ -1,27 +1,81 @@
 <div class="container mt-5">
   <div class="glass-card p-4">
-    <h3>Shipping Details 🚚</h3>
+    <h3 class="mb-4">Delivery Details 🚚</h3>
     <form id="orderForm">
       <input type="text" name="name" class="form-control mb-2" placeholder="Full Name" required>
-      <input type="email" name="email" class="form-control mb-2" placeholder="Email Address" required>
-      <input type="text" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
-      <textarea name="address" class="form-control mb-3" placeholder="Full Address (with Pincode)" required></textarea>
       
-      <div id="orderSummary" class="mb-3 p-2 bg-light rounded">
-          </div>
+      <div class="input-group mb-2">
+        <span class="input-group-text bg-light">🇮🇳 +91</span>
+        <input type="tel" name="phone" class="form-control" placeholder="10-digit WhatsApp No" pattern="[0-9]{10}" required>
+      </div>
 
-      <button type="submit" id="submitBtn" class="btn btn-success w-100">Proceed to UPI Payment 💳</button>
+      <input type="email" name="email" class="form-control mb-2" placeholder="Email Address" required>
+
+      <select name="state" id="custState" class="form-select mb-2" onchange="updateTotal()" required>
+        <option value="" disabled selected>Select State</option>
+        <option value="Gujarat">Gujarat</option>
+        <option value="Other">Other State (India)</option>
+      </select>
+
+      <input type="text" name="city" id="custCity" class="form-control mb-2" placeholder="City" oninput="updateTotal()" required>
+
+      <textarea name="address" id="custAddress" class="form-control mb-3" rows="3" placeholder="House No, Landmark, Area, Pincode..." oninput="updateTotal()" required></textarea>
+      
+      <div id="orderSummary" class="mb-3 p-3 bg-light rounded shadow-sm">
+        <div class="d-flex justify-content-between"><span>Subtotal:</span><span id="sub-val">₹0</span></div>
+        <div class="d-flex justify-content-between text-primary"><span id="ship-label">Shipping:</span><span id="ship-val">₹0</span></div>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold"><span>Grand Total:</span><span id="total-val">₹0</span></div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-success w-100 py-3 fw-bold">Confirm & Pay 💳</button>
     </form>
+    <p class="text-center text-muted mt-3 small">We accept UPI payments only</p>
   </div>
 </div>
 
 <script>
-// Use a self-executing function to keep variables private and prevent duplicates
+// Logic to update totals and shipping
+function updateTotal() {
+    const cartKey = 'cartKey';
+    const rawCart = localStorage.getItem(cartKey);
+    const cart = rawCart ? JSON.parse(rawCart) : [];
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
+    const state = document.getElementById('custState').value;
+    const address = document.getElementById('custAddress').value.toLowerCase();
+    const city = document.getElementById('custCity').value.toLowerCase();
+    
+    let shipping = 60; // Default Standard India
+    
+    // Custom Local/State Logic
+    const localAreas = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur'];
+    const isLocal = localAreas.some(area => address.includes(area) || city.includes(area));
+
+    if (isLocal) {
+        shipping = 0;
+        document.getElementById('ship-label').innerText = "Shipping (Local Free):";
+    } else if (state === "Gujarat") {
+        shipping = 50;
+        document.getElementById('ship-label').innerText = "Shipping (Gujarat):";
+    } else {
+        document.getElementById('ship-label').innerText = "Shipping (Standard):";
+    }
+
+    document.getElementById('sub-val').innerText = "₹" + subtotal;
+    document.getElementById('ship-val').innerText = "₹" + shipping;
+    document.getElementById('total-val').innerText = "₹" + (subtotal + shipping);
+    
+    return { subtotal, shipping, total: subtotal + shipping };
+}
+
 (function() {
-    const cartKey = 'cartKey'; // Ensure this matches your cart's name in localStorage
+    const cartKey = 'cartKey';
     const form = document.getElementById('orderForm');
 
-    // FIX: Check if the listener is already attached to prevent "two times" error
+    // Initial load
+    window.addEventListener('load', updateTotal);
+
     if (form && !form.dataset.listenerAttached) {
         form.dataset.listenerAttached = "true";
 
@@ -29,38 +83,37 @@
             e.preventDefault();
             
             const btn = document.getElementById('submitBtn');
-            btn.disabled = true; // Prevent double clicking
-            btn.innerText = "Processing...";
+            btn.disabled = true;
+            btn.innerText = "Processing Order...";
 
+            const totals = updateTotal();
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
-            // 1. Get Cart Data
+            // Format Address for Sheet
+            data.full_address = `${data.address}, ${data.city}, ${data.state}`;
+            
             const rawCart = localStorage.getItem(cartKey);
             const cart = rawCart ? JSON.parse(rawCart) : [];
             
             data.orderDetails = JSON.stringify(cart);
-            data.total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            data.total = totals.total;
 
-            // 2. Send to Google Sheets (via Webhook)
             fetch('https://script.google.com/macros/s/AKfycbzGAG5jWSwMGSHZNuFx-E5jo6jbkhoCzp9vzh9_jYd0rYPUFpBFZzuJjrBuIP4qvDQL/exec', {
                 method: 'POST',
-                mode: 'no-cors', // Helps prevent CORS issues with Google Scripts
+                mode: 'no-cors',
                 body: JSON.stringify(data)
-            }).then(res => {
-                // 3. Trigger UPI Payment
-                // Assuming generateUPILink is defined in your other scripts
+            }).then(() => {
+                // Trigger UPI Payment (Assuming generateUPILink is globally available)
                 const upiUrl = generateUPILink(data.total, Date.now());
                 
-                // Clear cart after payment intent
                 localStorage.removeItem(cartKey);
-                alert("Redirecting to your Payment App...");
-                
+                alert("Order recorded! Redirecting to UPI...");
                 window.location.href = upiUrl;
             }).catch(err => {
                 console.error(err);
                 btn.disabled = false;
-                btn.innerText = "Proceed to UPI Payment 💳";
+                btn.innerText = "Confirm & Pay 💳";
             });
         });
     }
