@@ -4,62 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
-    <title>Product Details</title>
+    <title>Product Details | Nifty Knots 🧶</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { background: #FFF9E3 !important; color: #444 !important; font-family: 'Quicksand', sans-serif; }
-        .big-img { width: 100%; height: 400px; object-fit: cover; border-radius: 0 0 40px 40px; }
-        .card-body-custom { background: white; margin-top: -30px; border-radius: 40px 40px 0 0; padding: 30px; position: relative; min-height: 500px; }
-        .wide-qty { background: #f8f9fa; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 20px 0; border: 1px solid #eee; }
-        .btn-buy { background: #C9B1FF; color: white; border-radius: 50px; width: 100%; padding: 15px; border: none; font-weight: bold; }
+        :root { color-scheme: light !important; }
+        body { background-color: #FFF9E3 !important; font-family: 'Quicksand', sans-serif; color: #444 !important; }
+        .product-container { background: white; border-radius: 30px; padding: 25px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .back-btn { background: #f8f9fa; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .main-img { border-radius: 20px; width: 100%; height: 300px; object-fit: cover; }
+        .price-tag { color: #C9B1FF; font-size: 1.5rem; font-weight: bold; }
+        .qty-box { display: flex; align-items: center; gap: 15px; background: #f8f9fa; border-radius: 50px; padding: 5px 15px; width: fit-content; }
+        .qty-btn { border: none; background: none; font-size: 1.2rem; font-weight: bold; color: #C9B1FF; }
+        .btn-add { background: #C9B1FF; color: white; border: none; border-radius: 50px; padding: 15px; width: 100%; font-weight: bold; font-size: 1.1rem; transition: 0.3s; }
+        .btn-add:hover { background: #b59ae6; transform: translateY(-2px); }
     </style>
 </head>
 <body>
-    <div id="ui-content"></div>
+
+<div class="container py-3">
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅</button>
+    
+    <div class="product-container" id="product-content">
+        </div>
+</div>
 
 <script>
+    // THE FULL PRODUCT CATALOG (Synced with index.html)
     const products = [
-        { id: "k1", name: "RedPearl Flower", price: 30, img: "red_pearl.png", desc: "Handmade flower keychain[cite: 1]." },
-        { id: "h1", name: "Red Scrunchie", price: 30, img: "red_scrunchie.png", desc: "Simple crochet scrunchie[cite: 1]." },
-        { id: "p1", name: "Granny Square Pouch", price: 100, img: "square_pouch.png", desc: "Handmade square pouch[cite: 1]." },
-        { id: "s1", name: "Mini Rabbit", price: 150, img: "mini_rabbit_soft_toy.png", desc: "Handmade soft toy[cite: 1]." }
+        // 🌼 KEYCHAINS
+        { id: "k1", cat: "Keychains", name: "Red Pearl Flower", price: 30, img: "red_pearl.png", desc: "Handmade pearl flower keychain." },
+        { id: "k2", cat: "Keychains", name: "Falsa Pearl Flower", price: 30, img: "falsa_pearl.png", desc: "Handmade pearl flower keychain." },
+        { id: "k3", cat: "Keychains", name: "Blue Evil Eye", price: 50, img: "Blue_Keychain.png", desc: "Blue crochet keychain." },
+        { id: "k4", cat: "Keychains", name: "Pink Daisy", price: 50, img: "pink_daisy_Keychain.png", desc: "Pink daisy flower keychain." },
+        { id: "k5", cat: "Keychains", name: "White Daisy", price: 50, img: "white_daisy_Keychain.png", desc: "White daisy flower keychain." },
+        { id: "k6", cat: "Keychains", name: "Sunflower", price: 50, img: "sunflower_Keychain.png", desc: "Bright sunflower keychain." },
+
+        // 🎀 HAIR ACCESSORIES
+        { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 30, img: "red_scrunchie.png", desc: "Simple handmade red scrunchie." },
+        { id: "h2", cat: "Hair Accessories", name: "Dark Blue Scrunchie", price: 30, img: "darkblue_scrunchie.png", desc: "Simple handmade dark blue scrunchie." },
+        { id: "h3", cat: "Hair Accessories", name: "Pista Scrunchie", price: 30, img: "pista_scrunchie.png", desc: "Simple handmade pista green scrunchie." },
+        { id: "h4", cat: "Hair Accessories", name: "Unicorn Double", price: 60, img: "unicorn_double.png", desc: "Double color unicorn shaded scrunchie." },
+        { id: "h5", cat: "Hair Accessories", name: "Green Triple Layer", price: 70, img: "green_triple.png", desc: "Triple layer green & white scrunchie." },
+        { id: "h6", cat: "Hair Accessories", name: "Brown Flower Clip", price: 25, img: "brown_flower_clip.png", desc: "Handmade brown flower hair clip." },
+        { id: "h7", cat: "Hair Accessories", name: "Yellow Flower Clip", price: 25, img: "yellow_flower_clip.png", desc: "Handmade yellow flower hair clip." },
+        { id: "h8", cat: "Hair Accessories", name: "Dark Green Band", price: 80, img: "dark_green_hair_band.png", desc: "Handmade dark green hair band." },
+
+        // 👜 PURSE / POUCHES
+        { id: "p1", cat: "Purse/Pouch", name: "Rose Pink Mobile Cover", price: 150, img: "rosepink_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
+        { id: "p2", cat: "Purse/Pouch", name: "Blue Mobile Cover", price: 150, img: "blue_mobilecover_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
+        { id: "p3", cat: "Purse/Pouch", name: "Unicorn Purse", price: 250, img: "unicorn_crossbody_purse.png", desc: "Handmade unicorn shades purse." },
+        { id: "p4", cat: "Purse/Pouch", name: "Green Bow Purse", price: 300, img: "green_bow_purse.png", desc: "Elegant green bow cross body purse." },
+        { id: "p5", cat: "Purse/Pouch", name: "Mini Potli Pouch", price: 150, img: "mini_potli_pouch.png", desc: "Small handmade cream & maroon potli." },
+
+        // 🧸 SOFT TOYS
+        { id: "s1", cat: "Soft Toy", name: "Pink Rabbit", price: 190, img: "pink_rabbit_soft_toy.png", desc: "Cute handmade pink rabbit soft toy." },
+        { id: "s2", cat: "Soft Toy", name: "Photo Frame", price: 399, img: "rose_flower_photo_frame.png", desc: "Handmade rose flower photo frame." },
+
+        // 🌹 FLOWERS
+        { id: "f1", cat: "Flowers", name: "Pink Rose Pot", price: 180, img: "rosepink_flowerpot.png", desc: "Handmade pink rose flower pot." },
+        { id: "f2", cat: "Flowers", name: "Yellow Rose Pot", price: 180, img: "yellowrose_flowerpot.png", desc: "Handmade yellow rose flower pot." },
+        { id: "f3", cat: "Flowers", name: "Peach Rose Pot", price: 180, img: "peachrose_flowerpot.png", desc: "Handmade peach rose flower pot." }
     ];
 
-    const pid = new URLSearchParams(window.location.search).get('id');
-    const p = products.find(i => i.id === pid);
+    // Get product ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    const product = products.find(p => p.id === productId);
 
-    if(p) {
-        document.getElementById('ui-content').innerHTML = `
-            <div onclick="history.back()" style="position:absolute; top:20px; left:20px; background:white; border-radius:50%; padding:10px; z-index:10; cursor:pointer;">←</div>
-            <img src="${p.img}" class="big-img shadow">
-            <div class="card-body-custom shadow">
-                <h2 style="color: #C9B1FF;">${p.name}</h2>
-                <p class="text-muted">${p.desc}</p>
-                <h4 class="fw-bold">₹${p.price}</h4>
-                <div class="wide-qty">
-                    <button class="btn fw-bold" onclick="changeQty(-1)">−</button>
-                    <span id="qty" class="fs-4 fw-bold">1</span>
-                    <button class="btn fw-bold" onclick="changeQty(1)">+</button>
+    function renderProduct() {
+        const container = document.getElementById('product-content');
+        if (!product) {
+            container.innerHTML = "<h3>Product not found! 🧶</h3>";
+            return;
+        }
+
+        container.innerHTML = `
+            <img src="${product.img}" class="main-img mb-4" onerror="this.src='https://via.placeholder.com/300?text=Image+Coming+Soon'">
+            <h2 class="fw-bold">${product.name}</h2>
+            <p class="text-muted">${product.desc}</p>
+            <div class="price-tag mb-4">₹${product.price}</div>
+            
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <span class="fw-bold">Quantity:</span>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty(-1)">-</button>
+                    <span id="qty-val" class="fw-bold">1</span>
+                    <button class="qty-btn" onclick="updateQty(1)">+</button>
                 </div>
-                <button class="btn-buy" onclick="buyNow()">Confirm & Add to Cart ✨</button>
             </div>
+
+            <button class="btn-add" onclick="addToCart()">Add to Cart 🛍️</button>
         `;
-    } else {
-        document.body.innerHTML = "<h2 class='text-center mt-5'>Product not found. Please go back.</h2>";
     }
 
-    let qtyVal = 1;
-    function changeQty(d) {
-        qtyVal = Math.max(1, qtyVal + d);
-        document.getElementById('qty').innerText = qtyVal;
+    let currentQty = 1;
+    function updateQty(change) {
+        currentQty = Math.max(1, currentQty + change);
+        document.getElementById('qty-val').innerText = currentQty;
     }
 
-    function buyNow() {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        cart.push({...p, qty: qtyVal});
-        localStorage.setItem("cart", JSON.stringify(cart));
-        window.location.href = 'cart.html';
+    function addToCart() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(item => item.id === product.id);
+        
+        if (existing) {
+            existing.qty += currentQty;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                qty: currentQty,
+                img: product.img
+            });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert("Added to cart! ✨");
+        window.location.href = "cart.html";
     }
+
+    window.onload = renderProduct;
 </script>
 </body>
 </html>
