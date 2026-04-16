@@ -11,13 +11,15 @@
         :root { color-scheme: light !important; }
         body { background-color: #FFF9E3 !important; font-family: 'Quicksand', sans-serif; color: #444 !important; }
         .product-container { background: white; border-radius: 30px; padding: 25px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .back-btn { background: #f8f9fa; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .main-img { border-radius: 20px; width: 100%; height: 300px; object-fit: cover; }
-        .price-tag { color: #C9B1FF; font-size: 1.5rem; font-weight: bold; }
-        .qty-box { display: flex; align-items: center; gap: 15px; background: #f8f9fa; border-radius: 50px; padding: 5px 15px; width: fit-content; }
-        .qty-btn { border: none; background: none; font-size: 1.2rem; font-weight: bold; color: #C9B1FF; }
-        .btn-add { background: #C9B1FF; color: white; border: none; border-radius: 50px; padding: 15px; width: 100%; font-weight: bold; font-size: 1.1rem; transition: 0.3s; }
-        .btn-add:hover { background: #b59ae6; transform: translateY(-2px); }
+        .back-btn { background: #f8f9fa; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; transition: 0.3s; }
+        .back-btn:hover { background: #C9B1FF; color: white; }
+        .main-img { border-radius: 20px; width: 100%; height: auto; max-height: 400px; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .price-tag { color: #C9B1FF; font-size: 1.8rem; font-weight: bold; margin: 15px 0; }
+        .qty-box { display: flex; align-items: center; gap: 15px; background: #f8f9fa; border-radius: 50px; padding: 8px 20px; width: fit-content; }
+        .qty-btn { border: none; background: none; font-size: 1.5rem; font-weight: bold; color: #C9B1FF; cursor: pointer; }
+        .btn-add { background: #C9B1FF; color: white; border: none; border-radius: 50px; padding: 16px; width: 100%; font-weight: bold; font-size: 1.2rem; transition: 0.3s; margin-top: 20px; }
+        .btn-add:hover { background: #b59ae6; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(201, 177, 255, 0.4); }
+        .product-cat { text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #888; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -30,44 +32,74 @@
 </div>
 
 <script>
-    // THE FULL PRODUCT CATALOG (Synced with index.html)
+    // THE OFFICIAL NIFTY KNOTS CATALOG
     const products = [
         // 🌼 KEYCHAINS
         { id: "k1", cat: "Keychains", name: "Red Pearl Flower", price: 30, img: "red_pearl.png", desc: "Handmade pearl flower keychain." },
         { id: "k2", cat: "Keychains", name: "Falsa Pearl Flower", price: 30, img: "falsa_pearl.png", desc: "Handmade pearl flower keychain." },
-        { id: "k3", cat: "Keychains", name: "Blue Evil Eye", price: 50, img: "Blue_Keychain.png", desc: "Blue crochet keychain." },
-        { id: "k4", cat: "Keychains", name: "Pink Daisy", price: 50, img: "pink_daisy_Keychain.png", desc: "Pink daisy flower keychain." },
-        { id: "k5", cat: "Keychains", name: "White Daisy", price: 50, img: "white_daisy_Keychain.png", desc: "White daisy flower keychain." },
-        { id: "k6", cat: "Keychains", name: "Sunflower", price: 50, img: "sunflower_Keychain.png", desc: "Bright sunflower keychain." },
+        { id: "k3", cat: "Keychains", name: "Blue  Keychain", price: 50, img: "Blue_Keychain.png", desc: "Blue crochet keychain." },
+        { id: "k4", cat: "Keychains", name: "Coral Keychain", price: 50, img: "coral_Keychain.png", desc: "Blue crochet keychain." },
+        { id: "k5", cat: "Keychains", name: "Pink Daisy", price: 50, img: "pink_daisy_Keychain.png", desc: "Pink daisy flower keychain." },
+        { id: "k6", cat: "Keychains", name: "White Daisy", price: 50, img: "white_daisy_Keychain.png", desc: "White daisy flower keychain." },
+        { id: "k7", cat: "Keychains", name: "Sunflower", price: 50, img: "sunflower_Keychain.png", desc: "Bright sunflower keychain." },
+        { id: "k8", cat: "Keychains", name: "lavender Daisy", price: 50, img: "lavender_daisy_Keychain.png", desc: "lavender daisy flower keychain." },
+        { id: "k9", cat: "Keychains", name: "coral Daisy", price: 50, img: "coral_daisy_keychain.png", desc: "coral daisy flower keychain." },
 
         // 🎀 HAIR ACCESSORIES
-        { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 30, img: "red_scrunchie.png", desc: "Simple handmade red scrunchie." },
-        { id: "h2", cat: "Hair Accessories", name: "Dark Blue Scrunchie", price: 30, img: "darkblue_scrunchie.png", desc: "Simple handmade dark blue scrunchie." },
-        { id: "h3", cat: "Hair Accessories", name: "Pista Scrunchie", price: 30, img: "pista_scrunchie.png", desc: "Simple handmade pista green scrunchie." },
-        { id: "h4", cat: "Hair Accessories", name: "Unicorn Double", price: 60, img: "unicorn_double.png", desc: "Double color unicorn shaded scrunchie." },
-        { id: "h5", cat: "Hair Accessories", name: "Green Triple Layer", price: 70, img: "green_triple.png", desc: "Triple layer green & white scrunchie." },
-        { id: "h6", cat: "Hair Accessories", name: "Brown Flower Clip", price: 25, img: "brown_flower_clip.png", desc: "Handmade brown flower hair clip." },
-        { id: "h7", cat: "Hair Accessories", name: "Yellow Flower Clip", price: 25, img: "yellow_flower_clip.png", desc: "Handmade yellow flower hair clip." },
-        { id: "h8", cat: "Hair Accessories", name: "Dark Green Band", price: 80, img: "dark_green_hair_band.png", desc: "Handmade dark green hair band." },
+        { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 50, img: "red_scrunchie.png", desc: "Simple handmade red scrunchie." },
+        { id: "h2", cat: "Hair Accessories", name: "Yellow Scrunchie", price: 50, img: "yellow_scrunchie.png", desc: "Simple handmade Yellow scrunchie." },
+        { id: "h3", cat: "Hair Accessories", name: "White Scrunchie", price: 50, img: "white_scrunchie.png", desc: "Simple handmade white scrunchie." },
+        { id: "h4", cat: "Hair Accessories", name: "Light Blue Scrunchie", price: 50, img: "lblue_scrunchie.png", desc: "Simple handmade light blue scrunchie." },
+        { id: "h5", cat: "Hair Accessories", name: "Light Pink Scrunchie", price: 50, img: "lightpink_scrunchie.png", desc: "Simple handmade light pink scrunchie." },
+        { id: "h6", cat: "Hair Accessories", name: "Dark Blue Scrunchie", price: 50, img: "darkblue_scrunchie.png", desc: "Simple handmade dark blue scrunchie." },
+        { id: "h7", cat: "Hair Accessories", name: "Pista Scrunchie", price: 50, img: "pista_scrunchie.png", desc: "Simple handmade pista green scrunchie." },
+        { id: "h8", cat: "Hair Accessories", name: "Unicorn Double", price: 80, img: "unicorn_double.png", desc: "Double color unicorn shaded scrunchie." },
+        { id: "h9", cat: "Hair Accessories", name: "Rose pink & Offwhite Scrunchie", price: 80, img: "rose_white_double.png", desc: "Rose pink & Offwhite Scrunchie ." },
+        { id: "h10", cat: "Hair Accessories", name: "Brown & Offwhite Scrunchie", price: 80, img: "brown_offwhite_double.png", desc: "Brown & Offwhite Scrunchie ." },
+        { id: "h11", cat: "Hair Accessories", name: "Green & Offwhite Scrunchie", price: 80, img: "green_white_double.png", desc: "Green & Offwhite Scrunchie ." },
+        { id: "h12", cat: "Hair Accessories", name: "Light purple & Offwhite Scrunchie", price: 80, img: "purple_white_double.png", desc: "light purple & Offwhite Scrunchie ." },
+        { id: "h13", cat: "Hair Accessories", name: "Coral & Offwhite Scrunchie", price: 80, img: "coral_white_double.png", desc: "Coral & white Scrunchie." },
+        { id: "h14", cat: "Hair Accessories", name: "Falsa & Offwhite Scrunchie", price: 80, img: "falsa_white_double.png", desc: "Falsa & white Scrunchie." },
+        { id: "h15", cat: "Hair Accessories", name: "Green Triple Layer", price: 80, img: "green_triple.png", desc: "Triple layer green & white scrunchie." },
+        
+        { id: "h16", cat: "Hair Accessories", name: "Brown Flower Clip", price: 25, img: "brown_flower_clip.png", desc: "Handmade brown flower hair clip." },
+        { id: "h17", cat: "Hair Accessories", name: "Cream Flower Clip", price: 25, img: "cream_flower_clip.png", desc: "Handmade Cream flower hair clip." },
+        { id: "h18", cat: "Hair Accessories", name: "Offwhite Flower Clip", price: 25, img: "offwhite_flower_clip.png", desc: "Handmade offwhite flower hair clip." },
+        { id: "h19", cat: "Hair Accessories", name: "Light blue Flower Clip", price: 25, img: "lblue_flower_clip.png", desc: "Handmade light blue flower hair clip." },
+        { id: "h20", cat: "Hair Accessories", name: "Purple Flower Clip", price: 25, img: "purple_flower_clip.png", desc: "Handmade Purple flower hair clip." },
+        { id: "h21", cat: "Hair Accessories", name: "Red Flower Clip", price: 25, img: "red_flower_clip.png", desc: "Handmade red flower hair clip." },
+
+        { id: "h22", cat: "Hair Accessories", name: "Dark Green Band", price: 80, img: "dark_green_hair_band.png", desc: "Handmade dark green with tiny flowers hair band." },
+        { id: "h23", cat: "Hair Accessories", name: "Offwhite Band", price: 80, img: "offwhite_hair_band.png", desc: "Handmade offwhite with tiny flowers hair band." },
+        { id: "h24", cat: "Hair Accessories", name: "Brown Band", price: 80, img: "brown_hair_band.png", desc: "Handmade Brown tiny with flowers hair band." },
 
         // 👜 PURSE / POUCHES
-        { id: "p1", cat: "Purse/Pouch", name: "Rose Pink Mobile Cover", price: 150, img: "rosepink_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
+        { id: "p1", cat: "Purse/Pouch", name: "Rose Pink Mobile Cover", price: 150, img: "pink_mobilecover_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
         { id: "p2", cat: "Purse/Pouch", name: "Blue Mobile Cover", price: 150, img: "blue_mobilecover_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
-        { id: "p3", cat: "Purse/Pouch", name: "Unicorn Purse", price: 250, img: "unicorn_crossbody_purse.png", desc: "Handmade unicorn shades purse." },
-        { id: "p4", cat: "Purse/Pouch", name: "Green Bow Purse", price: 300, img: "green_bow_purse.png", desc: "Elegant green bow cross body purse." },
-        { id: "p5", cat: "Purse/Pouch", name: "Mini Potli Pouch", price: 150, img: "mini_potli_pouch.png", desc: "Small handmade cream & maroon potli." },
+        
+        { id: "p3", cat: "Purse/Pouch", name: "Unicorn Purse", price: 250, img: "Unicorn_crossbody_purse.png", desc: "Handmade unicorn shades Granny square purse." },
+        { id: "p4", cat: "Purse/Pouch", name: "Pink Purse", price: 250, img: "rosepink_crossbody_purse.png", desc: "Handmade pink colours Granny square purse." },
+        { id: "p5", cat: "Purse/Pouch", name: "Yellow Purse", price: 250, img: "yellow_crossbody_purse.png", desc: "Handmade yellow colours Granny square purse."  },
+        
+        { id: "p6", cat: "Purse/Pouch", name: "Green Bow Purse", price: 300, img: "green_bow_purse.png", desc: "Elegant green bow cross body purse." },
+        { id: "p7", cat: "Purse/Pouch", name: "Pink Bow Purse", price: 300, img: "lightpink_bow_purse.png", desc: "Elegant pink bow cross body purse." },
+        
+        { id: "p8", cat: "Purse/Pouch", name: "Green Potli Pouch", price: 150, img: "mini_potli_pouch.png", desc: "Small handmade  potli pouch." },
+        { id: "p9", cat: "Purse/Pouch", name: "Cream Potli Pouch", price: 150, img: "cream&maron_potli_pouch.png", desc: "Small handmade cream & maroon potli pouch." },
+        { id: "p10", cat: "Purse/Pouch", name: "Pink Potli Pouch", price: 150, img: "offwhite&lightpink_potli_pouch.png", desc: "Small handmade cream & maroon potli pouch." },
 
-        // 🧸 SOFT TOYS
-        { id: "s1", cat: "Soft Toy", name: "Pink Rabbit", price: 190, img: "pink_rabbit_soft_toy.png", desc: "Cute handmade pink rabbit soft toy." },
-        { id: "s2", cat: "Soft Toy", name: "Photo Frame", price: 399, img: "rose_flower_photo_frame.png", desc: "Handmade rose flower photo frame." },
+        // 🧸 SOFT TOYS / Showpieces
+        { id: "s1", cat: "Soft Toy/Showpieces", name: "Pink Rabbit", price: 190, img: "pink_mini_rabbit_soft_toy.png", desc: "Cute handmade pink rabbit soft toy." },
+        { id: "s2", cat: "Soft Toy/Showpieces", name: "Blue Rabbit", price: 399, img: "blue_mini_rabbit_soft_toy.png", desc: "Cute handmade blue rabbit soft toy." },
+        { id: "s3", cat: "Soft Toy/Showpieces", name: "Pink Rose Photo Frame", price: 399, img: "rose_flower_photo_frame.png", desc: "Handmade rose flower photo frame." },
 
         // 🌹 FLOWERS
         { id: "f1", cat: "Flowers", name: "Pink Rose Pot", price: 180, img: "rosepink_flowerpot.png", desc: "Handmade pink rose flower pot." },
         { id: "f2", cat: "Flowers", name: "Yellow Rose Pot", price: 180, img: "yellowrose_flowerpot.png", desc: "Handmade yellow rose flower pot." },
-        { id: "f3", cat: "Flowers", name: "Peach Rose Pot", price: 180, img: "peachrose_flowerpot.png", desc: "Handmade peach rose flower pot." }
+        { id: "f3", cat: "Flowers", name: "Coral Rose Pot", price: 180, img: "coralrose_flowerpot.png", desc: "Handmade coral rose flower pot." } , 
+        { id: "f4", cat: "Flowers", name: "Rose Flower Bouquet", price: 350, img: "rose_flower_bouquet.png", desc: "Handmade rose flower bouquet." }
     ];
 
-    // Get product ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
     const product = products.find(p => p.id === productId);
@@ -75,17 +107,18 @@
     function renderProduct() {
         const container = document.getElementById('product-content');
         if (!product) {
-            container.innerHTML = "<h3>Product not found! 🧶</h3>";
+            container.innerHTML = "<h3 class='text-center'>Item not found! 🧶</h3>";
             return;
         }
 
         container.innerHTML = `
-            <img src="${product.img}" class="main-img mb-4" onerror="this.src='https://via.placeholder.com/300?text=Image+Coming+Soon'">
+            <div class="product-cat">${product.cat}</div>
+            <img src="${product.img}" class="main-img mt-2 mb-4" onerror="this.src='https://via.placeholder.com/400?text=Product+Image'">
             <h2 class="fw-bold">${product.name}</h2>
             <p class="text-muted">${product.desc}</p>
-            <div class="price-tag mb-4">₹${product.price}</div>
+            <div class="price-tag">₹${product.price}</div>
             
-            <div class="d-flex align-items-center justify-content-between mb-4">
+            <div class="d-flex align-items-center justify-content-between my-4">
                 <span class="fw-bold">Quantity:</span>
                 <div class="qty-box">
                     <button class="qty-btn" onclick="updateQty(-1)">-</button>
@@ -99,14 +132,14 @@
     }
 
     let currentQty = 1;
-    function updateQty(change) {
-        currentQty = Math.max(1, currentQty + change);
+    function updateQty(val) {
+        currentQty = Math.max(1, currentQty + val);
         document.getElementById('qty-val').innerText = currentQty;
     }
 
     function addToCart() {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existing = cart.find(item => item.id === product.id);
+        const existing = cart.find(i => i.id === product.id);
         
         if (existing) {
             existing.qty += currentQty;
@@ -121,7 +154,7 @@
         }
         
         localStorage.setItem('cart', JSON.stringify(cart));
-        alert("Added to cart! ✨");
+        alert("Added to your basket! ✨");
         window.location.href = "cart.html";
     }
 
