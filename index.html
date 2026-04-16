@@ -45,26 +45,61 @@
 
 <script>
     const products = [
-        { id: "k1", cat: "Keychains", name: "RedPearl Flower", price: 30, img: "red_pearl.png", desc: "Handmade flower keychain[cite: 1]." },
-        { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 30, img: "red_scrunchie.png", desc: "Simple crochet scrunchie[cite: 1]." },
-        { id: "p1", cat: "Purse/Pouch", name: "Granny Square Pouch", price: 100, img: "square_pouch.png", desc: "Handmade square pouch[cite: 1]." },
-        { id: "s1", cat: "Soft Toy", name: "Mini Rabbit", price: 150, img: "mini_rabbit_soft_toy.png", desc: "Handmade soft toy[cite: 1]." }
+        // 🌼 KEYCHAINS
+        { id: "k1", cat: "Keychains", name: "Red Pearl Flower", price: 30, img: "red_pearl.png", desc: "Handmade pearl flower keychain." },
+        { id: "k2", cat: "Keychains", name: "Falsa Pearl Flower", price: 30, img: "falsa_pearl.png", desc: "Handmade pearl flower keychain." },
+        { id: "k3", cat: "Keychains", name: "Blue Evil Eye", price: 50, img: "Blue_Keychain.png", desc: "Blue crochet keychain." },
+        { id: "k4", cat: "Keychains", name: "Pink Daisy", price: 50, img: "pink_daisy_Keychain.png", desc: "Pink daisy flower keychain." },
+        { id: "k5", cat: "Keychains", name: "White Daisy", price: 50, img: "white_daisy_Keychain.png", desc: "White daisy flower keychain." },
+        { id: "k6", cat: "Keychains", name: "Sunflower", price: 50, img: "sunflower_Keychain.png", desc: "Bright sunflower keychain." },
+
+        // 🎀 HAIR ACCESSORIES
+        { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 30, img: "red_scrunchie.png", desc: "Simple handmade red scrunchie." },
+        { id: "h2", cat: "Hair Accessories", name: "Dark Blue Scrunchie", price: 30, img: "darkblue_scrunchie.png", desc: "Simple handmade dark blue scrunchie." },
+        { id: "h3", cat: "Hair Accessories", name: "Pista Scrunchie", price: 30, img: "pista_scrunchie.png", desc: "Simple handmade pista green scrunchie." },
+        { id: "h4", cat: "Hair Accessories", name: "Unicorn Double", price: 60, img: "unicorn_double.png", desc: "Double color unicorn shaded scrunchie." },
+        { id: "h5", cat: "Hair Accessories", name: "Green Triple Layer", price: 70, img: "green_triple.png", desc: "Triple layer green & white scrunchie." },
+        { id: "h6", cat: "Hair Accessories", name: "Brown Flower Clip", price: 25, img: "brown_flower_clip.png", desc: "Handmade brown flower hair clip." },
+        { id: "h7", cat: "Hair Accessories", name: "Yellow Flower Clip", price: 25, img: "yellow_flower_clip.png", desc: "Handmade yellow flower hair clip." },
+        { id: "h8", cat: "Hair Accessories", name: "Dark Green Band", price: 80, img: "dark_green_hair_band.png", desc: "Handmade dark green hair band." },
+
+        // 👜 PURSE / POUCHES
+        { id: "p1", cat: "Purse/Pouch", name: "Rose Pink Mobile Cover", price: 150, img: "rosepink_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
+        { id: "p2", cat: "Purse/Pouch", name: "Blue Mobile Cover", price: 150, img: "blue_mobilecover_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
+        { id: "p3", cat: "Purse/Pouch", name: "Unicorn Purse", price: 250, img: "unicorn_crossbody_purse.png", desc: "Handmade unicorn shades purse." },
+        { id: "p4", cat: "Purse/Pouch", name: "Green Bow Purse", price: 300, img: "green_bow_purse.png", desc: "Elegant green bow cross body purse." },
+        { id: "p5", cat: "Purse/Pouch", name: "Mini Potli Pouch", price: 150, img: "mini_potli_pouch.png", desc: "Small handmade cream & maroon potli." },
+
+        // 🧸 SOFT TOYS
+        { id: "s1", cat: "Soft Toy", name: "Pink Rabbit", price: 190, img: "pink_rabbit_soft_toy.png", desc: "Cute handmade pink rabbit soft toy." },
+        { id: "s2", cat: "Soft Toy", name: "Photo Frame", price: 399, img: "rose_flower_photo_frame.png", desc: "Handmade rose flower photo frame." },
+
+        // 🌹 FLOWERS
+        { id: "f1", cat: "Flowers", name: "Pink Rose Pot", price: 180, img: "rosepink_flowerpot.png", desc: "Handmade pink rose flower pot." },
+        { id: "f2", cat: "Flowers", name: "Yellow Rose Pot", price: 180, img: "yellowrose_flowerpot.png", desc: "Handmade yellow rose flower pot." },
+        { id: "f3", cat: "Flowers", name: "Peach Rose Pot", price: 180, img: "peachrose_flowerpot.png", desc: "Handmade peach rose flower pot." }
     ];
 
     let currentCat = "All";
+
     function filterCat(cat) {
         currentCat = cat;
-        document.querySelectorAll('.cat-item').forEach(el => el.classList.toggle('cat-active', el.innerText.includes(cat)));
+        // Update button visual state
+        document.querySelectorAll('.cat-item').forEach(el => {
+            el.classList.toggle('cat-active', el.innerText === cat || (cat === 'All' && el.innerText === 'All Items'));
+        });
         renderProducts();
     }
 
     function renderProducts() {
         const display = document.getElementById('product-display');
-        const filtered = currentCat === "All" ? products : products.filter(p => p.cat.includes(currentCat));
+        // Logic to filter by category or show all
+        const filtered = currentCat === "All" ? products : products.filter(p => p.cat === currentCat);
+        
         display.innerHTML = filtered.map(p => `
             <div class="col-6">
                 <div class="product-card p-2">
-                    <img src="${p.img}" class="product-img w-100 rounded-4" onclick="window.location.href='product.html?id=${p.id}'">
+                    <img src="${p.img}" class="product-img w-100 rounded-4" onclick="window.location.href='product.html?id=${p.id}'" onerror="this.src='https://via.placeholder.com/150?text=Nifty+Knots'">
                     <h6 class="mt-2 mb-0 small fw-bold">${p.name}</h6>
                     <span class="text-muted small">₹${p.price}</span>
                     <button class="add-btn mt-2" onclick="window.location.href='product.html?id=${p.id}'">VIEW</button>
@@ -72,6 +107,7 @@
             </div>
         `).join('');
     }
+
     window.onload = renderProducts;
 </script>
 </body>
