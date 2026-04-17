@@ -11,7 +11,7 @@
         body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; }
         .checkout-card { border: none; border-radius: 20px; background: white; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .total-box { background: #f8f9fa; border-radius: 12px; padding: 15px; margin: 20px 0; border: 1px solid #eee; }
-        .total-row { font-weight: bold; font-size: 1.1rem; color: #C9B1FF; border-top: 2px dashed #eee; pt-2; }
+        .total-row { font-weight: bold; font-size: 1.1rem; color: #C9B1FF; border-top: 2px dashed #eee; padding-top: 10px; }
         .btn-confirm { background: #C9B1FF; color: white; border-radius: 50px; font-weight: bold; padding: 15px; border: none; width: 100%; transition: 0.3s; }
         .btn-confirm:hover { background: #b59ae6; transform: translateY(-2px); }
     </style>
@@ -32,7 +32,6 @@
                     <div class="d-flex justify-content-between mb-2"><span id="ship-label">Shipping (Standard):</span><span id="shipping-fee">₹0</span></div>
                     <div class="d-flex justify-content-between total-row pt-2"><span>Grand Total:</span><span id="grand-total">₹0</span></div>
                 </div>
-                <small id="shipping-note" class="text-primary d-block mt-2" style="font-size: 0.75rem;"></small>
             </div>
         </div>
 
@@ -40,26 +39,20 @@
             <div class="checkout-card">
                 <form id="orderForm">
                     <h6 class="mb-3">Delivery Information</h6>
-                    
                     <input type="text" name="name" class="form-control mb-3" placeholder="Full Name" required>
-                    
                     <div class="input-group mb-3">
                         <span class="input-group-text bg-light">🇮🇳 +91</span>
                         <input type="tel" name="phone" class="form-control" placeholder="10-digit WhatsApp No" pattern="[0-9]{10}" required>
                     </div>
-
                     <input type="email" name="email" class="form-control mb-3" placeholder="Email Address (for receipt)" required>
                     
                     <h6 class="mb-3 mt-4">Shipping Address</h6>
-                    
                     <select name="state" id="custState" class="form-select mb-3" onchange="calculateShipping()" required>
                         <option value="" disabled selected>Select Area</option>
                         <option value="Gujarat">Gujarat (Standard)</option>
                         <option value="Other">Other State (India)</option>
                     </select>
-
                     <input type="text" name="city" id="custCity" class="form-control mb-3" placeholder="City" oninput="calculateShipping()" required>
-
                     <textarea name="address" id="custAddress" class="form-control mb-4" rows="3" placeholder="House No, Landmark, Area, Pincode..." oninput="calculateShipping()" required></textarea>
 
                     <button type="submit" id="submitBtn" class="btn-confirm">Proceed to Payment ✨</button>
@@ -71,22 +64,15 @@
 </div>
 
 <script>
-    const cartKey = 'cartKey';
-    let subtotal = 0;
-    let shipping = 60;
+    const cartKey = 'nifty_cart'; // MATCHED WITH CART.HTML
 
-    // Use self-executing function to keep variables local and prevent duplicate listener error
     (function() {
         const form = document.getElementById('orderForm');
-
         window.addEventListener('load', loadCartAndShipping);
 
-        if (form && !form.dataset.listenerAttached) {
-            form.dataset.listenerAttached = "true";
-
+        if (form) {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 const btn = document.getElementById('submitBtn');
                 btn.disabled = true;
                 btn.innerText = "Processing...";
@@ -95,34 +81,24 @@
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData);
                 
-                // 1. Format Address for Google Sheet
                 data.full_address = `${data.address}, ${data.city}, ${data.state}`;
+                const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
                 
-                const rawCart = localStorage.getItem(cartKey);
-                const cart = rawCart ? JSON.parse(rawCart) : [];
-                
-                // 2. Add Cart Details for Sheet
-                data.orderDetails = JSON.stringify(cart);
-                data.subtotal = totals.subtotal;
+                data.items = cart.map(i => `${i.name}(${i.qty})`).join(', ');
                 data.total = totals.total;
 
-                // 3. Send to Google Sheets (Replace with your actual URL)
-                const sheetURL = "https://script.google.com/macros/s/AKfycbwx2fqGx5KmxWI25uyWgx27YOHLjZe_1wTOKV2MN1uWoAfeQ5drDx6dUdDi5Yaz_Ww5/exec";
+                // CORRECTED URL
+                const sheetURL = "https://script.google.com/macros/s/AKfycbxoz28GabG1ph1Z7E1eaU0bP1Swpt32fKqn6IoGn7SmmZKv4uYA_08LmlgJ8yP4_T8Y/exec";
                 
                 fetch(sheetURL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify(data)
                 }).then(() => {
-                    // 4. Trigger UPI Payment (Assuming generateUPILink is globally defined)
-                    const upiUrl = generateUPILink(data.total, Date.now());
-                    
-                    // Clear cart and redirect
                     localStorage.removeItem(cartKey);
                     alert("Order recorded! Redirecting to payment...");
-                    window.location.href = upiUrl;
+                    window.location.href = `payment.html?amt=${totals.total}`;
                 }).catch(err => {
-                    console.error(err);
                     btn.disabled = false;
                     btn.innerText = "Proceed to Payment ✨";
                 });
@@ -130,37 +106,23 @@
         }
     })();
 
-    // Function to calculate shipping based on address and city inputs
     function calculateShipping() {
         const state = document.getElementById('custState').value;
         const address = document.getElementById('custAddress').value.toLowerCase();
         const city = document.getElementById('custCity').value.toLowerCase();
         
-        // Default standard India
-        let shipFee = 60;
-        document.getElementById('ship-label').innerText = "Shipping (Standard):";
-
-        // Logic for Free Local Delivery Areas
+        let shipFee = (state === "Gujarat") ? 50 : 60;
         const localAreas = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur'];
-        const isLocal = localAreas.some(area => address.includes(area) || city.includes(area));
+        if (localAreas.some(area => address.includes(area) || city.includes(area))) { shipFee = 0; }
 
-        if (isLocal) {
-            shipFee = 0;
-            document.getElementById('ship-label').innerText = "Shipping (Local Free):";
-        } else if (state === "Gujarat") {
-            shipFee = 50;
-            document.getElementById('ship-label').innerText = "Shipping (Gujarat):";
-        }
-
-        const rawCart = localStorage.getItem(cartKey);
-        const cart = rawCart ? JSON.parse(rawCart) : [];
+        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
         const subVal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
         
         document.getElementById('subtotal').innerText = "₹" + subVal;
         document.getElementById('shipping-fee').innerText = "₹" + shipFee;
         document.getElementById('grand-total').innerText = "₹" + (subVal + shipFee);
         
-        return { subtotal: subVal, shipping: shipFee, total: subVal + shipFee };
+        return { subtotal: subVal, total: subVal + shipFee };
     }
 
     function loadCartAndShipping() {
