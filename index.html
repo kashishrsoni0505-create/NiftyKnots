@@ -10,13 +10,13 @@
     <style>
         /* THE NUCLEAR LIGHT MODE FIX */
         :root { color-scheme: light !important; }
-        html, body { background-color: #FFF9E3 !important; color: #444 !important; }
+        html, body { background-color: #FFF9E3 !important; color: #444 !important; font-family: 'Quicksand', sans-serif; }
         * { border-color: #eee !important; }
 
         .category-nav { display: flex; overflow-x: auto; gap: 10px; padding: 15px; background: white; white-space: nowrap; scrollbar-width: none; }
         .cat-item { padding: 8px 18px; border-radius: 50px; background: #f8f9fa; cursor: pointer; font-weight: 600; font-size: 0.8rem; color: #444; }
         .cat-active { background: #C9B1FF !important; color: white !important; }
-        .product-card { border: none; border-radius: 20px; background: white !important; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .product-card { border: none; border-radius: 20px; background: white !important; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); height: 100%; }
         .product-img { height: 160px; object-fit: cover; cursor: pointer; }
         .add-btn { width: 100%; border: 1px solid #C9B1FF; color: #C9B1FF; background: white; border-radius: 12px; font-weight: bold; padding: 5px; }
     </style>
@@ -55,41 +55,34 @@
         { id: "k9", cat: "Keychains", name: "coral Daisy", price: 60, img: "coral_daisy_keychain.png", desc: "coral daisy flower keychain." },
         { id: "k7", cat: "Keychains", name: "Sunflower", price: 60, img: "sunflower_Keychain.png", desc: "Bright sunflower keychain." },
 
-
-      
         // 👜 PURSE / POUCHES
         { id: "p1", cat: "Purse/Pouch", name: "Rose Pink Mobile Cover", price: 150, img: "pink_mobilecover_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
         { id: "p2", cat: "Purse/Pouch", name: "Blue Mobile Cover", price: 150, img: "blue_mobilecover_crossbody_purse.png", desc: "Cross body crochet mobile cover." },
-        
         { id: "p3", cat: "Purse/Pouch", name: "Unicorn Purse", price: 250, img: "Unicorn_crossbody_purse.png", desc: "Handmade unicorn shades Granny square purse." },
         { id: "p4", cat: "Purse/Pouch", name: "Pink Purse", price: 250, img: "rosepink_crossbody_purse.png", desc: "Handmade pink colours Granny square purse." },
-        { id: "p5", cat: "Purse/Pouch", name: "Yellow Purse", price: 250, img: "yellow_crossbody_purse.png", desc: "Handmade yellow colours Granny square purse."  },
-        
+        { id: "p5", cat: "Purse/Pouch", name: "Yellow Purse", price: 250, img: "yellow_crossbody_purse.png", desc: "Handmade yellow colours Granny square purse." },
         { id: "p6", cat: "Purse/Pouch", name: "Green Bow Purse", price: 300, img: "green_bow_purse.png", desc: "Elegant green bow cross body purse." },
         { id: "p7", cat: "Purse/Pouch", name: "Pink Bow Purse", price: 300, img: "lightpink_bow_purse.png", desc: "Elegant pink bow cross body purse." },
-        
-        { id: "p8", cat: "Purse/Pouch", name: "Green Potli Pouch", price: 120, img: "mini_potli_pouch.png", desc: "Small handmade  potli pouch." },
+        { id: "p8", cat: "Purse/Pouch", name: "Green Potli Pouch", price: 120, img: "mini_potli_pouch.png", desc: "Small handmade potli pouch." },
         { id: "p9", cat: "Purse/Pouch", name: "Cream Potli Pouch", price: 120, img: "cream&maron_potli_pouch.png", desc: "Small handmade cream & maroon potli pouch." },
         { id: "p10", cat: "Purse/Pouch", name: "Pink Potli Pouch", price: 120, img: "offwhite&lightpink_potli_pouch.png", desc: "Small handmade cream & maroon potli pouch." },
-
-
 
         // 🧸 SOFT TOYS
         { id: "s1", cat: "Soft Toy", name: "Pink Rabbit", price: 190, img: "pink_mini_rabbit_soft_toy.png", desc: "Cute handmade pink rabbit soft toy." },
         { id: "s2", cat: "Soft Toy", name: "Blue Rabbit", price: 150, img: "blue_mini_rabbit_soft_toy.png", desc: "Cute handmade blue rabbit soft toy." },
-        { id: "s3", cat: "Soft Toy", name: "Pink Rose Photo Frame", price: 350, img: "rose_flower_photo_frame.png", desc: "Handmade rose flower photo frame." },
-        { id: "s3", cat: "Showpieces", name: "Crochet Heart Wallhanging ", price: 300, img: "rose_heartshape_wallhanging.png", desc: "Crochet Heart Wallhanging." },
-
+       
         
-
+        // 🖼️ SHOWPIECES
+        { id: "s3_show", cat: "Showpieces", name: "Pink Rose Photo Frame", price: 350, img: "rose_flower_photo_frame.png", desc: "Handmade rose flower photo frame." },
+        { id: "s4_show", cat: "Showpieces", name: "Crochet Heart Wallhanging", price: 300, img: "rose_heartshape_wallhanging.png", desc: "Crochet Heart Wallhanging." },
 
         // 🌹 FLOWERS
         { id: "f1", cat: "Flowers", name: "Pink Rose Pot", price: 180, img: "rosepink_flowerpot.png", desc: "Handmade pink rose flower pot." },
         { id: "f2", cat: "Flowers", name: "Yellow Rose Pot", price: 180, img: "yellowrose_flowerpot.png", desc: "Handmade yellow rose flower pot." },
-        { id: "f3", cat: "Flowers", name: "Coral Rose Pot", price: 180, img: "coralrose_flowerpot.png", desc: "Handmade coral rose flower pot." } , 
-        { id: "f4", cat: "Flowers", name: "Rose Flower Bouquet", price: 350, img: "rose_flower_bouquet.png", desc: "Handmade rose flower bouquet." }
+        { id: "f3", cat: "Flowers", name: "Coral Rose Pot", price: 180, img: "coralrose_flowerpot.png", desc: "Handmade coral rose flower pot." },
+        { id: "f4", cat: "Flowers", name: "Rose Flower Bouquet", price: 350, img: "rose_flower_bouquet.png", desc: "Handmade rose flower bouquet." }, // Fixed the missing comma here!
 
-          // 🎀 HAIR ACCESSORIES
+        // 🎀 HAIR ACCESSORIES
         { id: "h1", cat: "Hair Accessories", name: "Red Scrunchie", price: 50, img: "red_scrunchie.png", desc: "Simple handmade red scrunchie." },
         { id: "h2", cat: "Hair Accessories", name: "Yellow Scrunchie", price: 50, img: "yellow_scrunchie.png", desc: "Simple handmade Yellow scrunchie." },
         { id: "h3", cat: "Hair Accessories", name: "White Scrunchie", price: 50, img: "white_scrunchie.png", desc: "Simple handmade white scrunchie." },
@@ -105,26 +98,21 @@
         { id: "h13", cat: "Hair Accessories", name: "Coral & Offwhite Scrunchie", price: 80, img: "coral_white_double.png", desc: "Coral & white Scrunchie." },
         { id: "h14", cat: "Hair Accessories", name: "Falsa & Offwhite Scrunchie", price: 80, img: "falsa_white_double.png", desc: "Falsa & white Scrunchie." },
         { id: "h15", cat: "Hair Accessories", name: "Green Triple Layer", price: 80, img: "green_triple.png", desc: "Triple layer green & white scrunchie." },
-        
         { id: "h16", cat: "Hair Accessories", name: "Brown Flower Clip", price: 25, img: "brown_flower_clip.png", desc: "Handmade brown flower hair clip." },
         { id: "h17", cat: "Hair Accessories", name: "Cream Flower Clip", price: 25, img: "cream_flower_clip.png", desc: "Handmade Cream flower hair clip." },
         { id: "h18", cat: "Hair Accessories", name: "Offwhite Flower Clip", price: 25, img: "offwhite_flower_clip.png", desc: "Handmade offwhite flower hair clip." },
         { id: "h19", cat: "Hair Accessories", name: "Light blue Flower Clip", price: 25, img: "lblue_flower_clip.png", desc: "Handmade light blue flower hair clip." },
         { id: "h20", cat: "Hair Accessories", name: "Purple Flower Clip", price: 25, img: "purple_flower_clip.png", desc: "Handmade Purple flower hair clip." },
         { id: "h21", cat: "Hair Accessories", name: "Red Flower Clip", price: 25, img: "red_flower_clip.png", desc: "Handmade red flower hair clip." },
-
-        
         { id: "h22", cat: "Hair Accessories", name: "Dark Green Band", price: 80, img: "dark_green_hair_band.png", desc: "Handmade dark green with tiny flowers hair band." },
         { id: "h23", cat: "Hair Accessories", name: "Offwhite Band", price: 80, img: "offwhite_hair_band.png", desc: "Handmade offwhite with tiny flowers hair band." },
-        { id: "h24", cat: "Hair Accessories", name: "Brown Band", price: 80, img: "brown_hair_band.png", desc: "Handmade Brown tiny with flowers hair band." },
-
+        { id: "h24", cat: "Hair Accessories", name: "Brown Band", price: 80, img: "brown_hair_band.png", desc: "Handmade Brown tiny with flowers hair band." }
     ];
 
     let currentCat = "All";
 
     function filterCat(cat) {
         currentCat = cat;
-        // Update button visual state
         document.querySelectorAll('.cat-item').forEach(el => {
             el.classList.toggle('cat-active', el.innerText === cat || (cat === 'All' && el.innerText === 'All Items'));
         });
@@ -133,7 +121,6 @@
 
     function renderProducts() {
         const display = document.getElementById('product-display');
-        // Logic to filter by category or show all
         const filtered = currentCat === "All" ? products : products.filter(p => p.cat === currentCat);
         
         display.innerHTML = filtered.map(p => `
