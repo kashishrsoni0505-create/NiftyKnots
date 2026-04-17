@@ -123,7 +123,7 @@
         data.items = cart.map(i => `${i.name}(${i.qty})`).join(', ');
         data.full_address = `${data.address}, ${data.city}, ${data.state}`;
 
-        fetch('https://script.google.com/macros/s/AKfycbzGAG5jWSwMGSHZNuFx-E5jo6jbkhoCzp9vzh9_jYd0rYPUFpBFZzuJjrBuIP4qvDQL/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbxoz28GabG1ph1Z7E1eaU0bP1Swpt32fKqn6IoGn7SmmZKv4uYA_08LmlgJ8yP4_T8Y/exec', {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify(data)
