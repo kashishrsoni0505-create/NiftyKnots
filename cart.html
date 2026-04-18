@@ -22,11 +22,22 @@
     <h3 class="fw-bold mb-4" style="color: #C9B1FF;">Your Order 🧶</h3>
 
     <div class="glass-card mb-4">
-        <h6 class="fw-bold mb-3">Items in Cart</h6>
+        <h6 class="fw-bold mb-3">Order Summary</h6>
         <div id="cart-list"></div>
-        <div class="d-flex justify-content-between fw-bold border-top pt-3 mt-2">
-            <span>Total Amount:</span>
-            <span id="final-total" style="color: #C9B1FF; font-size: 1.2rem;">₹0</span>
+        
+        <div class="border-top pt-3 mt-2" style="font-size: 0.9rem;">
+            <div class="d-flex justify-content-between text-muted mb-1">
+                <span>Subtotal:</span>
+                <span id="subtotal-val">₹0</span>
+            </div>
+            <div class="d-flex justify-content-between text-muted mb-2">
+                <span id="shipping-label">Shipping:</span>
+                <span id="shipping-val">₹0</span>
+            </div>
+            <div class="d-flex justify-content-between fw-bold" style="font-size: 1.1rem; color: #C9B1FF;">
+                <span>Grand Total:</span>
+                <span id="final-total">₹0</span>
+            </div>
         </div>
     </div>
 
