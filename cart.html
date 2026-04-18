@@ -100,22 +100,46 @@
     }
 
     function calcTotal() {
-        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-        const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        if(subtotal === 0) return 0;
-
-        const state = document.getElementById('stateSelect').value;
-        const city = document.getElementById('cityInput').value.toLowerCase();
-        const address = document.getElementById('addressInput').value.toLowerCase();
-        
-        let shipping = (state === "Gujarat") ? 50 : 60;
-        const local = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur'];
-        if (local.some(l => city.includes(l) || address.includes(l))) { shipping = 0; }
-
-        const total = subtotal + shipping;
-        document.getElementById('final-total').innerText = "₹" + total;
-        return total;
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    
+    if(subtotal === 0) {
+        document.getElementById('subtotal-val').innerText = "₹0";
+        document.getElementById('shipping-val').innerText = "₹0";
+        document.getElementById('final-total').innerText = "₹0";
+        return 0;
     }
+
+    const state = document.getElementById('stateSelect').value;
+    const city = document.getElementById('cityInput').value.toLowerCase();
+    const address = document.getElementById('addressInput').value.toLowerCase();
+    
+    // Default Shipping
+    let shipping = (state === "Gujarat") ? 50 : 60;
+    let shippingLabel = `Shipping (${state}):`;
+
+    // 📍 FREE LOCAL DELIVERY CHECK
+    // This looks for these words in the City or Address fields
+    const localAreas = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur', 'jagatpur', 'ahmedabad'];
+    
+    // Check if the customer mentioned a local area
+    const isLocal = localAreas.some(area => city.includes(area) || address.includes(area));
+
+    if (isLocal) {
+        shipping = 0;
+        shippingLabel = "Shipping (Local Free Delivery) ✨:";
+    }
+
+    const total = subtotal + shipping;
+
+    // Update the UI
+    document.getElementById('subtotal-val').innerText = "₹" + subtotal;
+    document.getElementById('shipping-label').innerText = shippingLabel;
+    document.getElementById('shipping-val').innerText = "₹" + shipping;
+    document.getElementById('final-total').innerText = "₹" + total;
+
+    return total;
+}
 
     document.getElementById('orderForm').onsubmit = function(e) {
         e.preventDefault();
