@@ -111,7 +111,7 @@
         const address = document.getElementById('custAddress').value.toLowerCase();
         const city = document.getElementById('custCity').value.toLowerCase();
         
-        let shipFee = (state === "Gujarat") ? 50 : 60;
+        let shipFee = (state === "Gujarat") ? 70 : 90;
         const localAreas = ['new ranip', 'ranip', 'gota', 'chandlodiya', 'chenpur'];
         if (localAreas.some(area => address.includes(area) || city.includes(area))) { shipFee = 0; }
 
