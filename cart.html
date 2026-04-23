@@ -52,8 +52,8 @@
             <input type="email" name="email" class="form-control mb-3" placeholder="Email Address" required>
             
             <select name="state" id="stateSelect" class="form-select mb-3" onchange="calcTotal()" required>
-                <option value="Gujarat">Gujarat (₹50 Shipping)</option>
-                <option value="Other">Outside Gujarat (₹60 Shipping)</option>
+                <option value="Gujarat">Gujarat (₹70 Shipping)</option>
+                <option value="Other">Outside Gujarat (₹90 Shipping)</option>
             </select>
 
             <input type="text" name="city" id="cityInput" class="form-control mb-3" placeholder="City" oninput="calcTotal()" required>
@@ -123,7 +123,7 @@
     const address = document.getElementById('addressInput').value.toLowerCase();
     
     // Default Shipping
-    let shipping = (state === "Gujarat") ? 50 : 60;
+    let shipping = (state === "Gujarat") ? 70 : 90;
     let shippingLabel = `Shipping (${state}):`;
 
     // 📍 FREE LOCAL DELIVERY CHECK
