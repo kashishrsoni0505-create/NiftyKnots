@@ -16,53 +16,36 @@
 </head>
 <body>
 
-<div class="container" style="max-width: 450px;">
-    <div class="payment-card">
-        <h2 style="color: #C9B1FF;">Almost There! ✨</h2>
-        <p class="text-muted">Please complete the payment to confirm your handcrafted order.</p>
+<div class="container" style="max-width: 450px; margin-top: 50px;">
+    <div class="payment-card" style="background: white; border-radius: 30px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;">
         
-        <div class="text-center mt-4">
-    <h4 class="mb-3">Total to Pay: <span id="display-amt" class="fw-bold" style="color: #C9B1FF;">₹0</span></h4>
-    
-    <button onclick="openUPI()" class="btn btn-lg w-100 py-3 text-white fw-bold shadow-sm" 
-            style="background-color: #C9B1FF; border-radius: 15px;">
-        Open Payment App ✨
-    </button>
-    
-    <p class="text-muted mt-3" style="font-size: 0.8rem;">
-        Clicking this will open GPay, PhonePe, or Paytm automatically.
-    </p>
+        <h2 style="color: #C9B1FF; font-family: 'Quicksand', sans-serif;">Almost There! ✨</h2>
+        <p class="text-muted">Please complete the payment to confirm your handcrafted order.</p>
+
+        <div class="py-3 mb-4" style="background: #F8F9FA; border-radius: 15px;">
+            <h4 class="mb-0" style="color: #555;">Amount: <span id="display-amt" style="font-weight: 600;">₹0</span></h4>
+        </div>
+
+        <p style="font-weight: 600; color: #C9B1FF; margin-bottom: 15px;">
+            Open your payment app and scan this QR code
+        </p>
+
+        <div class="position-relative d-inline-block">
+            <img src="myqr.png" alt="Nifty.Knots QR" class="img-fluid" 
+                 style="width: 280px; border-radius: 20px; border: 4px solid #FFF3AD; padding: 10px;">
+        </div>
+
+        <p class="text-muted mt-3" style="font-size: 0.85rem;">
+            Scan to pay with any UPI app (GPay, PhonePe, Paytm)
+        </p>
+    </div>
 </div>
 
 <script>
-    // 1. Get the amount from the URL
+    // Grabs the amount from the URL like payment.html?amt=100
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amt') || "0";
-    
-    // 2. Display the amount on the page
-    const displayAmtElement = document.getElementById('display-amt');
-    if (displayAmtElement) {
-        displayAmtElement.innerText = "₹" + amount;
-    }
-
-    function openUPI() {
-    // 1. Using the official ID from your QR stand
-    const upiId = "9376113566@okbizaxis"; 
-    
-    // 2. Updating the name to match your QR exactly
-    const businessName = "Nifty.Knots"; 
-    
-    // 3. Generating a unique ID for this specific transaction
-    const transactionRef = "NK" + Date.now(); 
-    
-    // 4. Constructing the link with the dot-enabled name
-    // am = the amount from your cart
-    // mc = 5947 (The code for Gift/Craft shops to help bank trust)
-    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${finalAmount}&cu=INR&mc=5947&tr=${transactionRef}&tn=OrderFromNiftyKnots`;
-
-    // 5. Directing the phone to open GPay/PhonePe
-    window.location.href = upiLink;
-}
+    document.getElementById('display-amt').innerText = "₹" + amount;
 </script>
 </body>
 </html>
