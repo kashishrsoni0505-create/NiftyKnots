@@ -46,17 +46,23 @@
     }
 
     function openUPI() {
-        // 3. UPDATED Business Details from your latest photo
-        const upiId = "gpay-12204848614@okbizaxis"; 
-        const businessName = "Nifty.Knots";
-        
-        // 4. Construct the UPI Link
-        // We use encodeURIComponent for the name and add a transaction note
-        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${amount}&cu=INR&tn=Order%20from%20Nifty%20Knots`;
+    // 1. Using the official ID from your QR stand
+    const upiId = "9376113566@okbizaxis"; 
+    
+    // 2. Updating the name to match your QR exactly
+    const businessName = "Nifty.Knots"; 
+    
+    // 3. Generating a unique ID for this specific transaction
+    const transactionRef = "NK" + Date.now(); 
+    
+    // 4. Constructing the link with the dot-enabled name
+    // am = the amount from your cart
+    // mc = 5947 (The code for Gift/Craft shops to help bank trust)
+    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${finalAmount}&cu=INR&mc=5947&tr=${transactionRef}&tn=OrderFromNiftyKnots`;
 
-        // 5. Trigger the Payment App
-        window.location.href = upiLink;
-    }
+    // 5. Directing the phone to open GPay/PhonePe
+    window.location.href = upiLink;
+}
 </script>
 </body>
 </html>
