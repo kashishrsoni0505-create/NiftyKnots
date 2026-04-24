@@ -25,12 +25,12 @@
             <h4 class="mb-0">Amount: <span id="display-amt" style="color: #444;">₹0</span></h4>
         </div>
 
-        <img src="myqr.png" class="qr-code" alt="Scan to Pay">
+        <button class="btn w-100 py-3 mt-3 fw-bold text-white shadow-sm" id="pay-now-btn" onclick="handlePayment()" style="background-color: #C9B1FF; border-radius: 15px;">
+    Pay Now ✨
+</button>
         
         
-        <div class="p-3" style="background: #FFF3AD; border-radius: 15px; font-size: 0.85rem;">
-           <b> Please send the screenshot of your payment to our email. Once your payment is completed, all order details will be shared with you via email </b>
-        </div>
+       
     </div>
 </div>
 
@@ -40,7 +40,7 @@
     document.getElementById('display-amt').innerText = "₹" + amount;
 
     function openUPI() {
-        const upiLink = `upi://pay?pa=q061359668@ybl&pn=NiftyKnots&am=${amount}&cu=INR`;
+        const upiLink = `upi://pay?pa=9376113566@okbizaxis&pn=NiftyKnots&am=${amount}&cu=INR`;
         window.location.href = upiLink;
     }
 </script>
