@@ -35,19 +35,26 @@
 </div>
 
 <script>
+    // 1. Get the amount from the URL (e.g., payment.html?amt=190)
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amt') || "0";
-    document.getElementById('display-amt').innerText = "₹" + amount;
+    
+    // 2. Display the amount on the page
+    const displayAmtElement = document.getElementById('display-amt');
+    if (displayAmtElement) {
+        displayAmtElement.innerText = "₹" + amount;
+    }
 
     function openUPI() {
-        // 1. Define your variables as STRINGS (using quotes "")
+        // 3. Official Business Details from your QR image
         const upiId = "9376113566@okbizaxis"; 
-        const businessName = "Nifty.Knots";
+        const businessName = "Nifty.Knots"; // Matching the dot in your QR title
         
-        // 2. Build the link using those variables
+        // 4. Construct the UPI Link
+        // We use encodeURIComponent to handle the dot in "Nifty.Knots"
         const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${amount}&cu=INR&tn=Order%20from%20Nifty%20Knots`;
-        
-        // 3. Open the link
+
+        // 5. Trigger the Payment App
         window.location.href = upiLink;
     }
 </script>
