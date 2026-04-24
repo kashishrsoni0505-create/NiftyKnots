@@ -34,20 +34,20 @@
     </p>
 </div>
 
- <script>
+<script>
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amt') || "0";
     document.getElementById('display-amt').innerText = "₹" + amount;
 
     function openUPI() {
-        // CORRECTED LINE BELOW:
-        // pa = your UPI ID
-        // pn = your Business Name (Nifty Knots)
-        const upiId = "9376113566@okbizaxis"; // <--- CHANGE THIS to your real ID
+        // 1. Define your variables as STRINGS (using quotes "")
+        const upiId = "9376113566@okbizaxis"; 
         const businessName = "Nifty Knots";
         
-        const upiLink = `upi://pay?pa=${9376113566@okbizaxis}&pn=${encodeURIComponent(Nifty.Knots)}&am=${amount}&cu=INR&tn=Order%20from%20Nifty%20Knots`;
+        // 2. Build the link using those variables
+        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${amount}&cu=INR&tn=Order%20from%20Nifty%20Knots`;
         
+        // 3. Open the link
         window.location.href = upiLink;
     }
 </script>
