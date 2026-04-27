@@ -10,11 +10,10 @@
     <style>
         body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
         .payment-card { background: white; border-radius: 30px; padding: 35px 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 420px; width: 100%; text-align: center; }
-        .amount-badge { background: #F8F9FA; border-radius: 15px; padding: 12px; margin: 15px 0; border: 2px dashed #C9B1FF; }
-        .qr-container { position: relative; display: inline-block; margin: 20px 0; }
-        .qr-img { width: 260px; height: auto; border: 6px solid #FFF3AD; border-radius: 20px; padding: 5px; }
-        .instruction-box { background: #F1EDFF; border-radius: 15px; padding: 15px; text-align: left; margin-top: 20px; border-left: 5px solid #C9B1FF; }
-        .btn-confirm { background: #C9B1FF; color: white; border-radius: 12px; font-weight: 600; padding: 12px; border: none; width: 100%; margin-top: 20px; transition: 0.3s; }
+        .amount-box { background: #F8F9FA; border-radius: 20px; padding: 15px; margin: 15px 0; border: 2px dashed #C9B1FF; }
+        .qr-img { width: 260px; height: auto; border: 6px solid #FFF3AD; border-radius: 20px; padding: 5px; margin: 20px 0; }
+        .btn-done { background: linear-gradient(135deg, #C9B1FF 0%, #B094FF 100%); color: white; border-radius: 15px; font-weight: 600; padding: 15px; border: none; width: 100%; margin-top: 20px; transition: 0.3s; font-size: 1.1rem; }
+        .btn-done:active { transform: scale(0.97); }
         #success-ui { display: none; }
     </style>
 </head>
@@ -23,45 +22,43 @@
 <div class="payment-card shadow-lg">
     <div id="payment-ui">
         <h2 style="color: #C9B1FF;">Almost There! ✨</h2>
-        <p class="text-muted small">Please use the safe QR method below to complete your handcrafted order.</p>
+        <p class="text-muted small">Please scan the QR code with any UPI app to complete your order.</p>
 
-        <div class="amount-badge">
-            <h4 class="mb-0" style="color: #555;">To Pay: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
+        <div class="amount-box">
+            <h4 class="mb-0" style="color: #555;">Total to Pay: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
         </div>
 
-        <div class="qr-container">
-            <img src="myqr.png" alt="Scan to Pay" class="qr-img">
-        </div>
+        <img src="myqr.png" alt="Scan to Pay" class="qr-img">
 
-        <div class="instruction-box">
-            <p class="mb-1" style="font-weight: 600; color: #6A5ACD; font-size: 0.95rem;">How to pay on this phone: 📱</p>
-            <ol class="small mb-0" style="color: #555; padding-left: 20px;">
-                <li>Take a <b>Screenshot</b> of this QR.</li>
-                <li>Open GPay, PhonePe, or Paytm.</li>
-                <li>Choose <b>'Scan QR'</b> → <b>'Upload from Gallery'</b>.</li>
-                <li>Select the screenshot & pay the total amount.</li>
-            </ol>
-        </div>
+        <p class="text-muted mt-2 small">Scanning ensures a 100% secure transaction.</p>
 
-        <button onclick="showSuccess()" class="btn-confirm shadow-sm">
-            I've Completed the Payment ✅
+        <button onclick="showSuccess()" class="btn-done shadow">
+            I have paid successfully ✅
         </button>
     </div>
 
     <div id="success-ui">
-        <h1 style="font-size: 4rem;">Yay! 🥳</h1>
-        <h3 style="color: #C9B1FF;">Order Confirmed!</h3>
-        <p class="text-muted mt-3">We've received your order. Please check your email for further info and updates.</p>
-        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary mt-3 w-100" style="border-radius: 12px;">Back to Home</button>
+        <div class="mb-4">
+            <span style="font-size: 5rem;">🥳</span>
+        </div>
+        <h2 style="color: #C9B1FF; font-weight: 700;">Yay! Order Confirmed</h2>
+        <p class="text-muted mt-3">We have received your order details. Please check your email for further info and updates!</p>
+        
+        <hr style="border-top: 2px dashed #eee; margin: 25px 0;">
+        
+        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary w-100" style="border-radius: 12px; padding: 12px;">
+            Back to Shop 🧶
+        </button>
     </div>
 </div>
 
 <script>
-    // 1. Get amount from URL
+    // 1. Initialize Price from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const finalAmt = urlParams.get('amt') || "0"; 
-    document.getElementById('display-amt').innerText = "₹" + finalAmt;
+    const price = urlParams.get('amt') || "0"; 
+    document.getElementById('display-amt').innerText = "₹" + price;
 
+    // 2. Show Success Screen & Confetti
     function showSuccess() {
         document.getElementById('payment-ui').style.display = 'none';
         document.getElementById('success-ui').style.display = 'block';
@@ -74,5 +71,6 @@
         });
     }
 </script>
+
 </body>
 </html>
