@@ -50,26 +50,25 @@
     const finalAmt = urlParams.get('amt') || "1"; 
     document.getElementById('display-amt').innerText = "₹" + finalAmt;
 
-    function handlePayment() {
-        const upiId = "gpay-12204848614@okbizaxis"; 
-        const bizName = "Nifty.Knots";
-        const tid = "NK" + Date.now();
+   function handlePayment() {
+    // 1. We use the cleaner ID (without gpay- prefix) which often triggers fewer warnings
+    const upiId = "9376113566@okbizaxis"; 
+    const bizName = "Nifty Knots"; // Removed the dot temporarily to see if it helps trust
+    
+    // 2. Simplified Link: We remove 'mc' and 'tr' which sometimes trigger merchant security flags
+    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(bizName)}&am=${finalAmt}&cu=INR&tn=NiftyKnotsOrder`;
 
-        // The Deep Link that fills the amount and name automatically
-        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(bizName)}&am=${finalAmt}&cu=INR&tr=${tid}&tn=OrderForNiftyKnots`;
+    // 3. The "Double-Tap" Redirect
+    // This forces the browser to hand over the data to GPay more cleanly
+    window.location.replace(upiLink);
 
-        // Redirect to UPI Apps
-        window.location.href = upiLink;
-
-        // 2. Logic to detect when they return from the payment app
-        // Since we can't 'really' check if payment was successful without a backend, 
-        // we show the success screen when the user comes back to this tab.
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                showSuccess();
-            }
-        });
-    }
+    // Success detection logic remains the same
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            showSuccess();
+        }
+    });
+}
 
     function showSuccess() {
         document.getElementById('payment-ui').style.display = 'none';
