@@ -8,11 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .payment-card { background: white; border-radius: 30px; padding: 40px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 400px; width: 90%; }
-        .amount-badge { background: #F8F9FA; border-radius: 15px; padding: 15px; margin: 20px 0; border: 2px dashed #C9B1FF; }
-        .btn-pay { background: linear-gradient(135deg, #C9B1FF 0%, #B094FF 100%); color: white; border-radius: 15px; font-weight: 600; padding: 16px; border: none; width: 100%; font-size: 1.2rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(201, 177, 255, 0.4); }
-        .btn-pay:active { transform: scale(0.96); }
+        body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .payment-card { background: white; border-radius: 30px; padding: 35px 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 420px; width: 100%; text-align: center; }
+        .amount-badge { background: #F8F9FA; border-radius: 15px; padding: 12px; margin: 15px 0; border: 2px dashed #C9B1FF; }
+        .qr-container { position: relative; display: inline-block; margin: 20px 0; }
+        .qr-img { width: 260px; height: auto; border: 6px solid #FFF3AD; border-radius: 20px; padding: 5px; }
+        .instruction-box { background: #F1EDFF; border-radius: 15px; padding: 15px; text-align: left; margin-top: 20px; border-left: 5px solid #C9B1FF; }
+        .btn-confirm { background: #C9B1FF; color: white; border-radius: 12px; font-weight: 600; padding: 12px; border: none; width: 100%; margin-top: 20px; transition: 0.3s; }
         #success-ui { display: none; }
     </style>
 </head>
@@ -21,60 +23,49 @@
 <div class="payment-card shadow-lg">
     <div id="payment-ui">
         <h2 style="color: #C9B1FF;">Almost There! ✨</h2>
-        <p class="text-muted">Pay now to confirm your handcrafted order.</p>
+        <p class="text-muted small">Please use the safe QR method below to complete your handcrafted order.</p>
 
         <div class="amount-badge">
-            <h4 class="mb-0" style="color: #555;">Total Amount: <span id="display-amt" style="color: #C9B1FF;">₹0</span></h4>
+            <h4 class="mb-0" style="color: #555;">To Pay: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
         </div>
 
-        <button onclick="handlePayment()" class="btn-pay">
-            Pay Now ✨
-        </button>
+        <div class="qr-container">
+            <img src="myqr.png" alt="Scan to Pay" class="qr-img">
+        </div>
 
-        <p class="text-muted mt-4" style="font-size: 0.8rem;">
-            Secure UPI Payment via Google Pay, PhonePe, or Paytm
-        </p>
+        <div class="instruction-box">
+            <p class="mb-1" style="font-weight: 600; color: #6A5ACD; font-size: 0.95rem;">How to pay on this phone: 📱</p>
+            <ol class="small mb-0" style="color: #555; padding-left: 20px;">
+                <li>Take a <b>Screenshot</b> of this QR.</li>
+                <li>Open GPay, PhonePe, or Paytm.</li>
+                <li>Choose <b>'Scan QR'</b> → <b>'Upload from Gallery'</b>.</li>
+                <li>Select the screenshot & pay the total amount.</li>
+            </ol>
+        </div>
+
+        <button onclick="showSuccess()" class="btn-confirm shadow-sm">
+            I've Completed the Payment ✅
+        </button>
     </div>
 
     <div id="success-ui">
         <h1 style="font-size: 4rem;">Yay! 🥳</h1>
         <h3 style="color: #C9B1FF;">Order Confirmed!</h3>
-        <p class="text-muted mt-3">Please check your email for further info and updates.</p>
-        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary mt-3" style="border-radius: 12px;">Back to Home</button>
+        <p class="text-muted mt-3">We've received your order. Please check your email for further info and updates.</p>
+        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary mt-3 w-100" style="border-radius: 12px;">Back to Home</button>
     </div>
 </div>
 
 <script>
-    // 1. Get total from URL
+    // 1. Get amount from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const finalAmt = urlParams.get('amt') || "1"; 
+    const finalAmt = urlParams.get('amt') || "0"; 
     document.getElementById('display-amt').innerText = "₹" + finalAmt;
-
-   function handlePayment() {
-    // 1. We use the cleaner ID (without gpay- prefix) which often triggers fewer warnings
-    const upiId = "gpay-12204848614@okbizaxis"; 
-    const bizName = "Nifty.Knots"; // Removed the dot temporarily to see if it helps trust
-    
-    // 2. Simplified Link: We remove 'mc' and 'tr' which sometimes trigger merchant security flags
-    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(bizName)}&am=${finalAmt}&cu=INR&tn=Nifty.Knots`;
-
-    // 3. The "Double-Tap" Redirect
-    // This forces the browser to hand over the data to GPay more cleanly
-    window.location.replace(upiLink);
-
-    // Success detection logic remains the same
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") {
-            showSuccess();
-        }
-    });
-}
 
     function showSuccess() {
         document.getElementById('payment-ui').style.display = 'none';
         document.getElementById('success-ui').style.display = 'block';
         
-        // Throw some celebration confetti!
         confetti({
             particleCount: 150,
             spread: 70,
