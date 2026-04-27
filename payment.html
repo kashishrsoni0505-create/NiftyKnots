@@ -22,7 +22,7 @@
 <div class="payment-card shadow-lg">
     <div id="payment-ui">
         <h2 style="color: #C9B1FF;">Almost There! ✨</h2>
-        <p class="text-muted small">Please scan the QR code with any UPI app to complete your order.</p>
+        <p class="text-muted small">Please take a screenshot of this QR code and pay with any UPI app to complete your order.</p>
 
         <div class="amount-box">
             <h4 class="mb-0" style="color: #555;">Total to Pay: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
@@ -30,27 +30,12 @@
 
         <img src="myqr.png" alt="Scan to Pay" class="qr-img">
 
-        <p class="text-muted mt-2 small">Scanning ensures a 100% secure transaction.</p>
+        <p class="text-muted mt-2 small"> </p>
 
-        <button onclick="showSuccess()" class="btn-done shadow">
-            I have paid successfully ✅
-        </button>
+      
     </div>
 
-    <div id="success-ui">
-        <div class="mb-4">
-            <span style="font-size: 5rem;">🥳</span>
-        </div>
-        <h2 style="color: #C9B1FF; font-weight: 700;">Yay! Order Confirmed</h2>
-        <p class="text-muted mt-3">We have received your order details. Please check your email for further info and updates!</p>
-        
-        <hr style="border-top: 2px dashed #eee; margin: 25px 0;">
-        
-        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary w-100" style="border-radius: 12px; padding: 12px;">
-            Back to Shop 🧶
-        </button>
-    </div>
-</div>
+   
 
 <script>
     // 1. Initialize Price from URL
@@ -61,14 +46,7 @@
     // 2. Show Success Screen & Confetti
     function showSuccess() {
         document.getElementById('payment-ui').style.display = 'none';
-        document.getElementById('success-ui').style.display = 'block';
-        
-        confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#C9B1FF', '#FFF3AD', '#B094FF']
-        });
+       
     }
 </script>
 
