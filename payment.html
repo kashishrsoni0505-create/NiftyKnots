@@ -26,26 +26,38 @@
             <h4 class="mb-0" style="color: #555;">Amount: <span id="display-amt" style="font-weight: 600;">₹0</span></h4>
         </div>
 
-        <p style="font-weight: 600; color: #C9B1FF; margin-bottom: 15px;">
-            Open your payment app and scan this QR code
-        </p>
-
-        <div class="position-relative d-inline-block">
-            <img src="myqr.png" alt="Nifty.Knots QR" class="img-fluid" 
-                 style="width: 280px; border-radius: 20px; border: 4px solid #FFF3AD; padding: 10px;">
-        </div>
-
-        <p class="text-muted mt-3" style="font-size: 0.85rem;">
-            Scan to pay with any UPI app (GPay, PhonePe, Paytm)
-        </p>
-    </div>
+       <div class="text-center mt-4">
+    <button onclick="openUPI()" class="btn btn-lg w-100 py-3 text-white fw-bold shadow" 
+            style="background: linear-gradient(135deg, #C9B1FF 0%, #B094FF 100%); border-radius: 15px; border: none; font-size: 1.2rem;">
+        Open Payment App ✨
+    </button>
+    
+    <p class="text-muted mt-3" style="font-size: 0.9rem;">
+        Clicking will open GPay, PhonePe, or Paytm automatically.
+    </p>
+</div>
 </div>
 
 <script>
-    // Grabs the amount from the URL like payment.html?amt=100
-    const urlParams = new URLSearchParams(window.location.search);
-    const amount = urlParams.get('amt') || "0";
-    document.getElementById('display-amt').innerText = "₹" + amount;
+    function openUPI() {
+        // 1. Get the amount from your URL (?amt=100)
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amt') || "1"; // Default to 1 for testing
+        
+        // 2. Official Merchant Info from your photos
+        const upiId = "gpay-12204848614@okbizaxis"; 
+        const businessName = "Nifty.Knots";
+        
+        // 3. Generate a unique Transaction Ref (helps bypass 'duplicate payment' errors)
+        const txnId = "NK" + Math.floor(100000 + Math.random() * 900000);
+        
+        // 4. Construct the deep link
+        // We include mc=5947 (Gift/Souvenir) to tell the bank you are a craft business
+        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(businessName)}&am=${amount}&cu=INR&mc=5947&tr=${txnId}&tn=Order%20for%20Nifty.Knots`;
+
+        // 5. Attempt to open the app
+        window.location.href = upiLink;
+    }
 </script>
 </body>
 </html>
