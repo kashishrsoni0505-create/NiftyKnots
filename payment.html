@@ -10,10 +10,9 @@
     <style>
         body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
         .payment-card { background: white; border-radius: 30px; padding: 35px 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 420px; width: 100%; text-align: center; }
-        .amount-box { background: #F8F9FA; border-radius: 20px; padding: 15px; margin: 15px 0; border: 2px dashed #C9B1FF; }
-        .qr-img { width: 260px; height: auto; border: 6px solid #FFF3AD; border-radius: 20px; padding: 5px; margin: 20px 0; }
-        .btn-done { background: linear-gradient(135deg, #C9B1FF 0%, #B094FF 100%); color: white; border-radius: 15px; font-weight: 600; padding: 15px; border: none; width: 100%; margin-top: 20px; transition: 0.3s; font-size: 1.1rem; }
-        .btn-done:active { transform: scale(0.97); }
+        .amount-box { background: #F8F9FA; border-radius: 15px; padding: 15px; margin: 15px 0; border: 2px dashed #C9B1FF; }
+        .qr-img { width: 240px; height: auto; border: 6px solid #FFF3AD; border-radius: 20px; margin: 20px 0; }
+        .btn-pay { background: linear-gradient(135deg, #C9B1FF 0%, #B094FF 100%); color: white; border-radius: 15px; font-weight: 600; padding: 16px; border: none; width: 100%; font-size: 1.15rem; transition: 0.3s; }
         #success-ui { display: none; }
     </style>
 </head>
@@ -22,31 +21,56 @@
 <div class="payment-card shadow-lg">
     <div id="payment-ui">
         <h2 style="color: #C9B1FF;">Almost There! ✨</h2>
-        <p class="text-muted small">Please take a screenshot of this QR code and pay with any UPI app to complete your order.</p>
+        <p class="text-muted small">Pay now to confirm your order.</p>
 
         <div class="amount-box">
-            <h4 class="mb-0" style="color: #555;">Total to Pay: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
+            <h4 class="mb-0">Amount: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
         </div>
 
         <img src="myqr.png" alt="Scan to Pay" class="qr-img">
 
-        <p class="text-muted mt-2 small"> </p>
-
-      
+        <button onclick="openUPI()" class="btn-pay shadow-sm">
+            Pay Now with UPI ✨
+        </button>
+        
+        <p class="text-muted mt-3" style="font-size: 0.8rem;">Opens GPay, PhonePe, or Paytm automatically</p>
     </div>
 
-   
+    <div id="success-ui">
+        <h1 style="font-size: 4rem;">🥳</h1>
+        <h2 style="color: #C9B1FF; font-weight: 700;">Order Confirmed!</h2>
+        <p class="text-muted mt-3">We've received your order. Check your email for updates! 🧶</p>
+        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary w-100 mt-3" style="border-radius: 12px;">Back to Shop</button>
+    </div>
+</div>
 
 <script>
-    // 1. Initialize Price from URL
+    // 1. Initialize the display amount immediately on page load
     const urlParams = new URLSearchParams(window.location.search);
-    const price = urlParams.get('amt') || "0"; 
-    document.getElementById('display-amt').innerText = "₹" + price;
+    const amountToCharge = urlParams.get('amt') || "1"; 
+    document.getElementById('display-amt').innerText = "₹" + amountToCharge;
 
-    // 2. Show Success Screen & Confetti
+    function openUPI() {
+        const upiId = "gpay-12204848614@okbizaxis"; 
+        const bizName = "Nifty.Knots";
+        const tid = "NK" + Date.now();
+        
+        // Corrected URL: using 'amountToCharge' variable consistently
+        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(bizName)}&am=${amountToCharge}&cu=INR&tr=${tid}&tn=NiftyKnotsOrder`;
+
+        // Redirect to UPI apps
+        window.location.href = upiLink;
+
+        // Show success celebration after a short delay
+        setTimeout(() => {
+            showSuccess();
+        }, 2000);
+    }
+
     function showSuccess() {
         document.getElementById('payment-ui').style.display = 'none';
-       
+        document.getElementById('success-ui').style.display = 'block';
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#C9B1FF', '#FFF3AD'] });
     }
 </script>
 
