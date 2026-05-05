@@ -6,71 +6,77 @@
     <title>Complete Payment | Nifty Knots 🧶</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Confetti for the 'Yay' moment -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body { background-color: #FFF9E3; font-family: 'Quicksand', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .payment-card { background: white; border-radius: 30px; padding: 35px 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 420px; width: 100%; text-align: center; }
-        .amount-box { background: #F8F9FA; border-radius: 15px; padding: 15px; margin: 15px 0; border: 2px dashed #C9B1FF; }
-        .qr-img { width: 240px; height: auto; border: 6px solid #FFF3AD; border-radius: 20px; margin: 20px 0; }
-        .btn-pay { background: linear-gradient(135deg, #C9B1FF 0%, #B094FF 100%); color: white; border-radius: 15px; font-weight: 600; padding: 16px; border: none; width: 100%; font-size: 1.15rem; transition: 0.3s; }
+        .payment-card { background: white; border-radius: 30px; padding: 40px 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 420px; width: 100%; text-align: center; }
+        .amount-box { background: #F8F9FA; border-radius: 20px; padding: 15px; margin: 20px 0; border: 2px dashed #C9B1FF; }
+        .qr-img { width: 280px; height: auto; border: 8px solid #FFF3AD; border-radius: 20px; padding: 5px; margin: 20px 0; }
+        .instruction-text { color: #6A5ACD; font-weight: 600; font-size: 1rem; margin-bottom: 10px; }
+        .btn-confirm { background: linear-gradient(135deg, #C9B1FF 0%, #B094FF 100%); color: white; border-radius: 15px; font-weight: 600; padding: 15px; border: none; width: 100%; margin-top: 10px; transition: 0.3s; font-size: 1.1rem; }
         #success-ui { display: none; }
     </style>
 </head>
 <body>
 
 <div class="payment-card shadow-lg">
+    <!-- 1. PAYMENT UI -->
     <div id="payment-ui">
-        <h2 style="color: #C9B1FF;">Almost There! ✨</h2>
-        <p class="text-muted small">Pay now to confirm your order.</p>
-
+        <h2 style="color: #C9B1FF; font-weight: 700;">ALMOST THERE! ✨</h2>
+        
+        <!-- Total Amount -->
         <div class="amount-box">
-            <h4 class="mb-0">Amount: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
+            <h4 class="mb-0" style="color: #555;">Total Amount: <span id="display-amt" style="color: #C9B1FF; font-weight: 700;">₹0</span></h4>
         </div>
 
-        <img src="myqr.png" alt="Scan to Pay" class="qr-img">
+        <!-- Instruction Notice -->
+        <p class="instruction-text">
+            Please take a screenshot of this scanner and pay to confirm your order.
+        </p>
 
-        <button onclick="openUPI()" class="btn-pay shadow-sm">
-            Pay Now with UPI ✨
+        <!-- QR Code Image -->
+        <img src="myqr.png" alt="Nifty Knots QR" class="qr-img">
+
+        <!-- Confirmation Button -->
+        <button onclick="showSuccess()" class="btn-confirm shadow">
+            I have paid successfully ✅
         </button>
-        
-        <p class="text-muted mt-3" style="font-size: 0.8rem;">Opens GPay, PhonePe, or Paytm automatically</p>
     </div>
 
+    <!-- 2. SUCCESS UI -->
     <div id="success-ui">
-        <h1 style="font-size: 4rem;">🥳</h1>
-        <h2 style="color: #C9B1FF; font-weight: 700;">Order Confirmed!</h2>
-        <p class="text-muted mt-3">We've received your order. Check your email for updates! 🧶</p>
-        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary w-100 mt-3" style="border-radius: 12px;">Back to Shop</button>
+        <div class="mb-4">
+            <span style="font-size: 5rem;">🥳</span>
+        </div>
+        <h2 style="color: #C9B1FF; font-weight: 700;">Yay! Order Confirmed</h2>
+        <p class="text-muted mt-3">We have received your order details. Please check your email for further info and updates! 🧶</p>
+        
+        <hr style="border-top: 2px dashed #eee; margin: 25px 0;">
+        
+        <button onclick="window.location.href='index.html'" class="btn btn-outline-secondary w-100" style="border-radius: 12px; padding: 12px;">
+            Return to Home
+        </button>
     </div>
 </div>
 
 <script>
-    // 1. Initialize the display amount immediately on page load
+    // Pull the amount from the URL (?amt=XXX)
     const urlParams = new URLSearchParams(window.location.search);
-    const amountToCharge = urlParams.get('amt') || "1"; 
-    document.getElementById('display-amt').innerText = "₹" + amountToCharge;
+    const orderAmt = urlParams.get('amt') || "0"; 
+    document.getElementById('display-amt').innerText = "₹" + orderAmt;
 
-    function openUPI() {
-        const upiId = "gpay-12204848614@okbizaxis"; 
-        const bizName = "Nifty.Knots";
-        const tid = "NK" + Date.now();
-        
-        // Corrected URL: using 'amountToCharge' variable consistently
-        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(bizName)}&am=${amountToCharge}&cu=INR&tr=${tid}&tn=NiftyKnotsOrder`;
-
-        // Redirect to UPI apps
-        window.location.href = upiLink;
-
-        // Show success celebration after a short delay
-        setTimeout(() => {
-            showSuccess();
-        }, 2000);
-    }
-
+    // Switch to Success UI and fire confetti
     function showSuccess() {
         document.getElementById('payment-ui').style.display = 'none';
         document.getElementById('success-ui').style.display = 'block';
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#C9B1FF', '#FFF3AD'] });
+        
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#C9B1FF', '#FFF3AD', '#B094FF']
+        });
     }
 </script>
 
